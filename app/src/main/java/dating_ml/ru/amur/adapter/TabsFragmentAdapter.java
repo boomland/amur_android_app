@@ -9,9 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.HashMap;
 import java.util.Map;
 
-import dating_ml.ru.amur.R;
 import dating_ml.ru.amur.fragment.AbstractTabFragment;
-import dating_ml.ru.amur.fragment.ExampleFragment;
 import dating_ml.ru.amur.fragment.MainFragment;
 import dating_ml.ru.amur.fragment.MatchesFragment;
 import dating_ml.ru.amur.fragment.ProfileFragment;
