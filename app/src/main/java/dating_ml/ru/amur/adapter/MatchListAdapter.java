@@ -7,18 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import java.util.List;
 
 import dating_ml.ru.amur.R;
-import dating_ml.ru.amur.dto.RemindDTO;
+import dating_ml.ru.amur.dto.MatchDTO;
 
 
-public class RemindListAdapter extends RecyclerView.Adapter<RemindListAdapter.RemindViewHolder> {
-    private List<RemindDTO> data;
+public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.RemindViewHolder> {
+    private List<MatchDTO> data;
 
-    public RemindListAdapter(List<RemindDTO> data) {
+    public MatchListAdapter(List<MatchDTO> data) {
         this.data = data;
     }
 
@@ -31,7 +30,7 @@ public class RemindListAdapter extends RecyclerView.Adapter<RemindListAdapter.Re
 
     @Override
     public void onBindViewHolder(RemindViewHolder holder, int position) {
-        RemindDTO item = data.get(position);
+        MatchDTO item = data.get(position);
         holder.title.setText(item.getTitle());
     }
 

@@ -3,7 +3,6 @@ package dating_ml.ru.amur.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dating_ml.ru.amur.R;
-import dating_ml.ru.amur.adapter.RemindListAdapter;
-import dating_ml.ru.amur.dto.RemindDTO;
+import dating_ml.ru.amur.adapter.MatchListAdapter;
+import dating_ml.ru.amur.dto.MatchDTO;
 
 
 public class MatchesFragment extends AbstractTabFragment {
@@ -39,7 +38,7 @@ public class MatchesFragment extends AbstractTabFragment {
 
         RecyclerView rv = view.findViewById(R.id.recyclerView);
         rv.setLayoutManager(new LinearLayoutManager(context));
-        rv.setAdapter(new RemindListAdapter(createMockData()));
+        rv.setAdapter(new MatchListAdapter(createMockData()));
 
         return view;
     }
@@ -48,18 +47,18 @@ public class MatchesFragment extends AbstractTabFragment {
         this.context = context;
     }
 
-    private List<RemindDTO> createMockData() {
-        List<RemindDTO> data = new ArrayList<>();
-        data.add(new RemindDTO("Item 1"));
-        data.add(new RemindDTO("Item 2"));
-        data.add(new RemindDTO("Item 3"));
-        data.add(new RemindDTO("Item 4"));
-        data.add(new RemindDTO("Item 5"));
-        data.add(new RemindDTO("Item 6"));
-        data.add(new RemindDTO("Item 7"));
-        data.add(new RemindDTO("Item 8"));
-        data.add(new RemindDTO("Item 9"));
-        data.add(new RemindDTO("Item 10"));
+    private List<MatchDTO> createMockData() {
+        List<MatchDTO> data = new ArrayList<>();
+        data.add(new MatchDTO("Item 1"));
+        data.add(new MatchDTO("Item 2"));
+        data.add(new MatchDTO("Item 3"));
+        data.add(new MatchDTO("Item 4"));
+        data.add(new MatchDTO("Item 5"));
+        data.add(new MatchDTO("Item 6"));
+        data.add(new MatchDTO("Item 7"));
+        data.add(new MatchDTO("Item 8"));
+        data.add(new MatchDTO("Item 9"));
+        data.add(new MatchDTO("Item 10"));
 
         return data;
     }

@@ -1,9 +1,9 @@
 package dating_ml.ru.amur.dto;
 
-public class RemindDTO {
+public class MatchDTO {
     private String title;
 
-    public RemindDTO(String title) {
+    public MatchDTO(String title) {
         this.title = title;
     }
 
