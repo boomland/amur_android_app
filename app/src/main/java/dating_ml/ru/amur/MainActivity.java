@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import dating_ml.ru.amur.adapter.TabsPagerFragmentAdapter;
+import dating_ml.ru.amur.adapter.TabsFragmentAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,11 +28,23 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
 
-
         initTabs();
     }
 
 
+    
+
+    private void initTabs() {
+        viewPager = findViewById(R.id.view_pager);
+
+        TabsFragmentAdapter adapter = new TabsFragmentAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+    
+    // to delete
     private void initToolbar() {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
@@ -43,15 +55,5 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-    }
-
-    private void initTabs() {
-        viewPager = findViewById(R.id.view_pager);
-
-        TabsPagerFragmentAdapter adapter = new TabsPagerFragmentAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
-
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
     }
 }
