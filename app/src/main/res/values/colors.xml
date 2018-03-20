@@ -5,4 +5,5 @@
     <color name="colorMainBackground">#f5f5f5</color>
     <color name="colorWhite">#e2e2e2</color>
     <color name="colorBlack">#191919</color>
+    <color name="colorButton">#e2e2e2</color>
 </resources>

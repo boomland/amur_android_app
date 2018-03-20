@@ -12,7 +12,7 @@ import dating_ml.ru.amur.R;
 
 
 public class ProfileFragment extends AbstractTabFragment {
-    private static final int LAYOUT = R.layout.fragment_example;
+    private static final int LAYOUT = R.layout.fragment_profile;
 
     public static ProfileFragment getInstance(Context context) {
         Bundle args = new Bundle();
