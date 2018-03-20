@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
-        initToolbar();
+//        initToolbar();
 
         drawerLayout = findViewById(R.id.drawer_layout);
 
