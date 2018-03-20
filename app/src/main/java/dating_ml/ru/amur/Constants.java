@@ -5,7 +5,7 @@ package dating_ml.ru.amur;
  */
 
 public class Constants {
-    public final int TAB_ONE = 0;
-    public final int TAB_TWO = 1;
-    public final int TAB_THREE = 2;
+    public final static int PROFILE_TAB_INDEX = 0;
+    public final static int MAIN_TAB_INDEX = 1;
+    public final static int MATCHES_TAB_INDEX = 2;
 }

@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.getTabAt(Constants.MAIN_TAB_INDEX).select();
     }
     
     // to delete

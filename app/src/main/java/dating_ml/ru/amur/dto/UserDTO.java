@@ -9,7 +9,7 @@ import java.util.Date;
 public class UserDTO implements Parcelable {
     //TODO сделать private
     public String name;
-    public String city;
+    public String userAvatar;
     public String url;
 
     private int dist;
@@ -22,16 +22,16 @@ public class UserDTO implements Parcelable {
     public UserDTO() {
     }
 
-    public UserDTO(String name, String city, String url) {
+    public UserDTO(String name, String userAvatar, String url) {
         this.name = name;
-        this.city = city;
+        this.userAvatar = userAvatar;
         this.url = url;
     }
 
-    public UserDTO(String name, String city, String url, int dist, Date birthDate, String tinderId,
+    public UserDTO(String name, String userAvatar, String url, int dist, Date birthDate, String tinderId,
                    int gender, String bio, ArrayList<String> photoUrls) {
         this.name = name;
-        this.city = city;
+        this.userAvatar = userAvatar;
         this.url = url;
 
 
@@ -47,8 +47,8 @@ public class UserDTO implements Parcelable {
         return name;
     }
 
-    public String getCity() {
-        return city;
+    public String getUserAvatar() {
+        return userAvatar;
     }
 
     public String getUrl() {
@@ -83,8 +83,8 @@ public class UserDTO implements Parcelable {
         this.name = name;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
     }
 
     public void setUrl(String url) {
@@ -120,7 +120,7 @@ public class UserDTO implements Parcelable {
         String res = "";
         res += "touristSpot: {";
         res += "name: " + name + ", ";
-        res += "city: " + city + ", ";
+        res += "userAvatar: " + userAvatar + ", ";
         res += "url: " + url + ", ";
         res += "dist: " + dist + ", ";
         res += "birthDate: " + birthDate.toString() + ", ";
@@ -143,7 +143,7 @@ public class UserDTO implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
-        dest.writeString(this.city);
+        dest.writeString(this.userAvatar);
         dest.writeString(this.url);
         dest.writeInt(this.dist);
         dest.writeLong(this.birthDate != null ? this.birthDate.getTime() : -1);
@@ -155,7 +155,7 @@ public class UserDTO implements Parcelable {
 
     protected UserDTO(Parcel in) {
         this.name = in.readString();
-        this.city = in.readString();
+        this.userAvatar = in.readString();
         this.url = in.readString();
         this.dist = in.readInt();
         long tmpBirthDate = in.readLong();

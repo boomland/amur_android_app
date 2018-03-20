@@ -1,4 +1,4 @@
-package dating_ml.ru.amur;
+package dating_ml.ru.amur.dto;
 
 public class TouristSpot {
     public String name;
