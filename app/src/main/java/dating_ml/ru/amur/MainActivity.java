@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    
-
     private void initTabs() {
         viewPager = findViewById(R.id.view_pager);
 
