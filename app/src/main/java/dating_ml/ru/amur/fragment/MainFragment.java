@@ -89,9 +89,9 @@ public class MainFragment extends AbstractTabFragment {
     }
 
     private void setup() {
-        progressBar = (ProgressBar) view.findViewById(R.id.activity_main_progress_bar);
+        progressBar = view.findViewById(R.id.activity_main_progress_bar);
 
-        cardStackView = (CardStackView) view.findViewById(R.id.activity_main_card_stack_view);
+        cardStackView = view.findViewById(R.id.activity_main_card_stack_view);
         cardStackView.setCardEventListener(new CardStackView.CardEventListener() {
             @Override
             public void onCardDragging(float percentX, float percentY) {
