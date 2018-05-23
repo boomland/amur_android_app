@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import dating_ml.ru.amur.ProfileActvity;
 import dating_ml.ru.amur.R;
 import dating_ml.ru.amur.adapter.UserCardAdapter;
 import dating_ml.ru.amur.dto.UserDTO;
@@ -121,6 +123,11 @@ public class MainFragment extends AbstractTabFragment {
             @Override
             public void onCardClicked(int index) {
                 Log.d("CardStackView", "onCardClicked: " + index);
+
+                Intent intent = new Intent(getActivity(), ProfileActvity.class);
+                intent.putExtra(ProfileActvity.USER_INFO, UserDTO.getMockUserDTO());
+
+                startActivity(intent);
             }
         });
     }

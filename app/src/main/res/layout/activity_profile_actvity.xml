@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/profile_photos_pager"
+            android:layout_width="match_parent"
+            android:layout_height="280dp" />
+
+        <TextView
+            android:id="@+id/name_and_age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Алена, 21"
+            android:textAlignment="viewStart"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="8dp"
+                app:srcCompat="@drawable/baseline_business_center_black_24dp" />
+
+            <TextView
+                android:id="@+id/workplace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Designer в rjvgfybb Design studio of SPBSUACE"
+                android:textAlignment="viewStart"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="8dp"
+                app:srcCompat="@drawable/baseline_school_black_24dp" />
+
+            <TextView
+                android:id="@+id/place_of_study"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SPB universty of architecture" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="8dp"
+                app:srcCompat="@drawable/baseline_place_black_24dp" />
+
+            <TextView
+                android:id="@+id/distance_to_you"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Миль от вас: 2" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#7b7b7b" />
+
+        <TextView
+            android:id="@+id/biography"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/long_text" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
