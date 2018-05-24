@@ -9,7 +9,7 @@ import android.widget.TextView;
 import dating_ml.ru.amur.adapter.ImageAdapter;
 import dating_ml.ru.amur.dto.UserDTO;
 
-public class ProfileActvity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
     final static public String USER_INFO = "USER_INFO";
     private final String mDistText = "Километров до вас ";
 

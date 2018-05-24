@@ -14,27 +14,72 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.Volley;
 import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.SwipeDirection;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import dating_ml.ru.amur.ProfileActvity;
+import dating_ml.ru.amur.AuthActivity;
+import dating_ml.ru.amur.MainActivity;
+import dating_ml.ru.amur.ProfileActivity;
 import dating_ml.ru.amur.R;
+import dating_ml.ru.amur.TinderAPI;
 import dating_ml.ru.amur.adapter.UserCardAdapter;
 import dating_ml.ru.amur.dto.UserDTO;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MainFragment extends AbstractTabFragment {
     private static final int LAYOUT = R.layout.fragment_main;
 
-
     private ProgressBar progressBar;
     private CardStackView cardStackView;
     private UserCardAdapter adapter;
+
+    RequestQueue queue;
+    String tinder_id;
+    String tinder_token;
+    String base_url;
+    List<UserDTO> spots;
+    boolean portion_acquired;
+
+    ArrayList<String> liked_ids;
+    ArrayList<String> disliked_ids;
+    int last_cnt;
+    int first = 1;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        liked_ids = new ArrayList<String>();
+        disliked_ids = new ArrayList<String>();
+        queue = Volley.newRequestQueue(getContext());
+        spots = new ArrayList<>();
+
+        tinder_id = ((MainActivity)getActivity()).tinder_id;
+        tinder_token = ((MainActivity)getActivity()).tinder_token;
+        base_url = ((MainActivity)getActivity()).base_url;
+
+        portion_acquired = false;
+    }
 
     public static MainFragment getInstance(Context context) {
         Bundle args = new Bundle();
@@ -52,8 +97,8 @@ public class MainFragment extends AbstractTabFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
+        makeEncounters();
         setup();
-        reload();
 
         return view;
     }
@@ -86,8 +131,125 @@ public class MainFragment extends AbstractTabFragment {
 
     private UserCardAdapter createUserCardAdapter() {
         final UserCardAdapter adapter = new UserCardAdapter(context);
-        adapter.addAll(createUsers());
+        adapter.addAll(spots);
         return adapter;
+    }
+
+    public void makeEncounters() {
+        try {
+            JSONArray votes = new JSONArray();
+
+            int sum_size = liked_ids.size() + disliked_ids.size();
+            String json_req;
+            if (sum_size > 0) {
+                for (int i = 0; i != liked_ids.size(); ++i) {
+                    votes.put(new JSONObject().put("id", liked_ids.get(i)).put("vote", 1));
+                }
+                for (int i = 0; i != disliked_ids.size(); ++i) {
+                    votes.put(new JSONObject().put("id", disliked_ids.get(i)).put("vote", 0));
+                }
+
+                liked_ids.clear();
+                disliked_ids.clear();
+
+                json_req = new JSONObject()
+                        .put("tinder_id", tinder_id)
+                        .put("tinder_auth_token", tinder_token)
+                        .put("action", "GET_ENCOUNTERS")
+                        .put("votes_data", votes)
+                        .toString();
+            } else {
+                json_req = new JSONObject()
+                        .put("tinder_id", tinder_id)
+                        .put("tinder_auth_token", tinder_token)
+                        .put("action", "GET_ENCOUNTERS")
+                        .toString();
+            }
+            JsonRequest amur_get_enc = AuthActivity.createCustomJsonRequest(
+                    base_url + "/api",
+                    json_req,
+                    encountersListener(),
+                    encountersError()
+            );
+            amur_get_enc.setRetryPolicy(new DefaultRetryPolicy(30000, 0, 0));
+            queue.add(amur_get_enc);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Response.Listener<String> encountersListener() {
+        return new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject json = new JSONObject(response);
+                    String status = json.getString("status");
+                    if (status.compareTo("ok") == 0) {
+                        Log.d("Encounters", "Sucessfully got pack of encounters");
+                        JSONArray data = json.getJSONArray("data");
+
+                        last_cnt = data.length();
+                        if (first == 0) {
+                            spots = extractRemainingUsers();
+                        }
+                        for (int i = 0; i != data.length(); ++i) {
+                            JSONObject object = data.getJSONObject(i);
+
+                            String name = object.getString("name");
+                            String id = object.getString("id");
+                            String photo_url = object.getJSONArray("photos").getJSONObject(0).getString("url");
+
+                            int dist = object.getInt("distance");
+
+                            SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+                            Date birthDate = ft.parse(object.getString("birthday"));
+
+                            int gender = object.getInt("gender");
+                            String bio = object.getString("bio");
+                            ArrayList<String> photoUrls = new ArrayList<String>();
+
+                            JSONArray jsonArray = object.getJSONArray("photos");
+                            for (int j = 0; j != jsonArray.length(); ++j) {
+                                if (jsonArray.getJSONObject(j).getString("type").compareTo("tinder") == 0) {
+                                    photoUrls.add(jsonArray.getJSONObject(j).getString("url"));
+                                }
+                            }
+
+                            spots.add(new UserDTO(name, id, photo_url, dist, birthDate, id, gender, bio, photoUrls));
+                        }
+                        portion_acquired = false;
+                    } else {
+                        Log.d("Encounters", "Not ok response. Error: " + json.getString("error_description"));
+                        Toast.makeText(getApplicationContext(),
+                                "Something went wrong while GE: " +
+                                        json.getString("error_description"),
+                                Toast.LENGTH_SHORT);
+                    }
+                } catch (JSONException je) {
+                    je.printStackTrace();
+                } catch (ParseException e) {
+                    Log.d("DateError", "Дата не была распаршена");
+                }
+                if (first == 1) {
+                    reload();
+                    first = 0;
+                } else {
+                    adapter.clear();
+                    adapter.addAll(spots);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        };
+    }
+
+    public Response.ErrorListener encountersError() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Encounters", "Error happened: " + error.toString());
+            }
+        };
     }
 
     private void setup() {
@@ -104,10 +266,33 @@ public class MainFragment extends AbstractTabFragment {
             public void onCardSwiped(SwipeDirection direction) {
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
-                if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
-                    Log.d("CardStackView", "Paginate: " + cardStackView.getTopIndex());
-                    paginate();
+
+                if (direction.toString().compareTo("Right") == 0) {
+                    // liked
+                    String id = spots.get(cardStackView.getTopIndex() - 1).getTinderId();
+                    liked_ids.add(id);
+                    JsonRequest like_request = TinderAPI.createSimpleGetApiCall(
+                            "https://api.gotinder.com/like/" + id,
+                            tinder_token);
+                    queue.add(like_request);
                 }
+                if (direction.toString().compareTo("Left") == 0) {
+                    // disliked
+                    String id = spots.get(cardStackView.getTopIndex() - 1).getTinderId();
+                    disliked_ids.add(id);
+
+                    JsonRequest dislike_request = TinderAPI.createSimpleGetApiCall(
+                            "https://api.gotinder.com/pass/" + id,
+                            tinder_token);
+                    queue.add(dislike_request);
+                }
+
+                if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
+                    Log.d("CardStackView", "NEW PORTION ACQUIRED!");
+                    portion_acquired = true;
+                    makeEncounters();
+                }
+                Log.d("CardStackView", "adapter.getCount() == " + adapter.getCount());
             }
 
             @Override
@@ -124,10 +309,12 @@ public class MainFragment extends AbstractTabFragment {
             public void onCardClicked(int index) {
                 Log.d("CardStackView", "onCardClicked: " + index);
 
-                Intent intent = new Intent(getActivity(), ProfileActvity.class);
-                intent.putExtra(ProfileActvity.USER_INFO, UserDTO.getMockUserDTO());
+                UserDTO user = spots.get(index);
 
-                startActivity(intent);
+                Log.d("CardStackView", "onCardClicked: " + index);
+                Log.d("ToursitSpot_user: ", user.toString());
+
+                startUserProfileActivity(user);
             }
         });
     }
@@ -264,5 +451,11 @@ public class MainFragment extends AbstractTabFragment {
 
     private void reverse() {
         cardStackView.reverse();
+    }
+
+    private void startUserProfileActivity(UserDTO user) {
+        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        intent.putExtra(ProfileActivity.USER_INFO, user);
+        getActivity().startActivity(intent);
     }
 }
