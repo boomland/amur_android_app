@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import dating_ml.ru.amur.AuthActivity;
+import dating_ml.ru.amur.JsonRequester;
 import dating_ml.ru.amur.MainActivity;
 import dating_ml.ru.amur.ProfileActivity;
 import dating_ml.ru.amur.R;
@@ -167,7 +168,7 @@ public class MainFragment extends AbstractTabFragment {
                         .put("action", "GET_ENCOUNTERS")
                         .toString();
             }
-            JsonRequest amur_get_enc = AuthActivity.createCustomJsonRequest(
+            JsonRequest amur_get_enc = JsonRequester.createCustomJsonRequest(
                     base_url + "/api",
                     json_req,
                     encountersListener(),

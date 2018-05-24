@@ -2,7 +2,6 @@ package dating_ml.ru.amur;
 
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -11,24 +10,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -49,6 +40,8 @@ public class AuthActivity extends AppCompatActivity {
     public LoginButton loginButton;
     public RequestQueue queue;
 
+    public JsonRequester requester;
+
     public MainUserDTO mainUser;
 
     public TextView mTextView;
@@ -61,6 +54,8 @@ public class AuthActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_auth);
+
+        requester = new JsonRequester(this);
 
 //        startMockMainActivity();
 
@@ -111,12 +106,8 @@ public class AuthActivity extends AppCompatActivity {
         Log.d("request", mainUser.getFacebookId());
         Log.d("request", mainUser.getFacebookToken());
 
-        JsonRequest tinder_request = createCustomJsonRequest("https://api.gotinder.com/auth",
-                "{\"facebook_id\": \"" + mainUser.getFacebookId() + "\", \"facebook_token\": \"" + mainUser.getFacebookToken() + "\"}",
-                createTinderAuthResponceListener(),
-                createTinderAuthErrorListener());
+        requester.doTinderAuthRequest(mainUser.getFacebookId(), mainUser.getFacebookToken(), createTinderAuthResponceListener(), createTinderAuthErrorListener());
 
-        queue.add(tinder_request);
         mTextView.setText("Tinder auth request set.");
     }
 
@@ -135,46 +126,36 @@ public class AuthActivity extends AppCompatActivity {
                 }
                 mTextView.setText("tinder_id: " + mainUser.getTinderId() + ".\n Tinder token: " + mainUser.getFacebookToken());
 
-                resolveAmurUrl();
+                requester.resolveAmurUrl(createResolveAmurUrlResponseListener(), createResolveAmurUrlErrorListener());
             }
         };
     }
 
-    public void resolveAmurUrl() {
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.GET,
-                "http://dating-ml.ru/get_server.php",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        amur_api.base_url = response;
-                        performAmurAuth();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        mTextView.setText("That didn't work! " + error.toString());
-                    }
-                });
+    private Response.Listener<String> createResolveAmurUrlResponseListener() {
+        return new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                requester.amurAPI.setBase_url(response);
+                performAmurAuth();
+            }
+        };
+    }
 
-        queue.add(stringRequest);
+    private Response.ErrorListener createResolveAmurUrlErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mTextView.setText("That didn't work! " + error.toString());
+            }
+        };
     }
 
     public Response.ErrorListener createTinderAuthErrorListener() {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
                 mTextView.setText("Error of tinder auth :(((((");
                 Log.d("request_error", "Instead of error description");
-                /*
-                Log.d("abd", "Error: " + error
-                        + ">>" + error.networkResponse.statusCode
-                        + ">>" + error.networkResponse.data
-                        + ">>" + error.getCause()
-                        + ">>" + error.getMessage());
-                */
 
                 if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                     mTextView.setText("Time out or no connection");
@@ -191,36 +172,26 @@ public class AuthActivity extends AppCompatActivity {
         };
     }
 
-    public static JsonRequest createCustomJsonRequest(String request_url,
-                                                      String data,
-                                                      Response.Listener<String> listener,
-                                                      Response.ErrorListener error_listener) {
-        return new JsonRequest(Request.Method.POST, request_url, data, listener, error_listener) {
-            @Override
-            public int compareTo(@NonNull Object o) {
-                return 0;
-            }
+    public void performAmurAuth() {
+        mTextView.setText("Oh yeah:) Amurrrr auth...)");
 
-            @Override
-            protected Response parseNetworkResponse(NetworkResponse response) {
-                try {
-                    String jsonString = new String(response.data, "UTF-8");
-                    return Response.success(jsonString, HttpHeaderParser.parseCacheHeaders(response));
-                } catch (UnsupportedEncodingException e) {
-                    return Response.error(new ParseError(e));
-                }
-            }
+        try {
+            String amur_login_str = new JSONObject()
+                    .put("action", "SET_AUTH_TOKEN")
+                    .put("tinder_id", mainUser.getTinderId())
+                    .put("tinder_auth_token", mainUser.getTinderToken())
+                    .toString();
+            JsonRequest amur_request = requester.createCustomJsonRequest(
+                    amur_api.base_url + "/api",
+                    amur_login_str,
+                    getAmurAuthListener(),
+                    createTinderAuthErrorListener());
+            requester.queue.add(amur_request);
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("app_version", "6.9.4");
-                params.put("platform", "ios");
-                params.put("content-type", "application/json");
-                params.put("User-agent", "Tinder/7.5.3 (iPhone; iOS 10.3.2; Scale/2.00)");
-                return params;
-            }
-        };
+        } catch (JSONException ex) {
+            mTextView.setText("Amur server request construct fail!");
+        }
+
     }
 
     public Response.Listener<String> getAmurAuthListener() {
@@ -239,27 +210,6 @@ public class AuthActivity extends AppCompatActivity {
                 Log.d("MAINACTIVITY", "It starts..............................");
             }
         };
-    }
-
-    public void performAmurAuth() {
-        mTextView.setText("Oh yeah:) Amurrrr auth...)");
-        try {
-            String amur_login_str = new JSONObject()
-                    .put("action", "SET_AUTH_TOKEN")
-                    .put("tinder_id", mainUser.getTinderId())
-                    .put("tinder_auth_token", mainUser.getTinderToken())
-                    .toString();
-            JsonRequest amur_request = createCustomJsonRequest(
-                    amur_api.base_url + "/api",
-                    amur_login_str,
-                    getAmurAuthListener(),
-                    createTinderAuthErrorListener());
-            queue.add(amur_request);
-
-        } catch (JSONException ex) {
-            mTextView.setText("Amur server request construct fail!");
-        }
-
     }
 
     void startMainActivity() {

@@ -1,37 +1,43 @@
 package dating_ml.ru.amur;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import co.intentservice.chatui.models.ChatMessage;
 import dating_ml.ru.amur.dto.MainUserDTO;
 import dating_ml.ru.amur.dto.UserDTO;
 
 public class JsonRequester {
-    private RequestQueue queue;
+    public RequestQueue queue;
+    public AmurAPI amurAPI;
 
     public JsonRequester(Context context) {
         this.queue = Volley.newRequestQueue(context);
+        amurAPI = new AmurAPI(queue);
     }
 
     public static ArrayList<ChatMessage> requestMessages(MainUserDTO mainUser, UserDTO buddy) {
         ArrayList<ChatMessage> res = new ArrayList<>();
 
         res = createMockMessages();
-
-        return res;
-    }
-
-    private static ArrayList<ChatMessage> createMockMessages() {
-        ArrayList<ChatMessage> res = new ArrayList<>();
-        res.add(new ChatMessage("Привет. Меня зовут Зухра. Давай знакомиться.", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
-        res.add(new ChatMessage("Привет. Имя странное, это настораживает.", System.currentTimeMillis(), ChatMessage.Type.SENT));
-        res.add(new ChatMessage("И так сойдет.", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
 
         return res;
     }
@@ -44,6 +50,65 @@ public class JsonRequester {
         return res;
     }
 
+    public void doTinderAuthRequest(String facebookId, String facebookToken, Response.Listener<String> response_listener, Response.ErrorListener error_listener) {
+        JsonRequest tinder_request = createCustomJsonRequest("https://api.gotinder.com/auth",
+                "{\"facebook_id\": \"" + facebookId + "\", \"facebook_token\": \"" + facebookToken + "\"}",
+                response_listener,
+                error_listener);
+
+        queue.add(tinder_request);
+    }
+
+    public void resolveAmurUrl(Response.Listener<String> response_listener, Response.ErrorListener error_listener) {
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                "http://dating-ml.ru/get_server.php",
+                response_listener,
+                error_listener);
+
+        queue.add(stringRequest);
+    }
+
+    public static JsonRequest createCustomJsonRequest(String request_url, String data, Response.Listener<String> response_listener, Response.ErrorListener error_listener) {
+        return new JsonRequest(Request.Method.POST, request_url, data, response_listener, error_listener) {
+            @Override
+            public int compareTo(@NonNull Object o) {
+                return 0;
+            }
+
+            @Override
+            protected Response parseNetworkResponse(NetworkResponse response) {
+                try {
+                    String jsonString = new String(response.data, "UTF-8");
+                    return Response.success(jsonString, HttpHeaderParser.parseCacheHeaders(response));
+                } catch (UnsupportedEncodingException e) {
+                    return Response.error(new ParseError(e));
+                }
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("app_version", "6.9.4");
+                params.put("platform", "ios");
+                params.put("content-type", "application/json");
+                params.put("User-agent", "Tinder/7.5.3 (iPhone; iOS 10.3.2; Scale/2.00)");
+                return params;
+            }
+        };
+    }
+
+
+
+
+    private static ArrayList<ChatMessage> createMockMessages() {
+        ArrayList<ChatMessage> res = new ArrayList<>();
+        res.add(new ChatMessage("Привет. Меня зовут Зухра. Давай знакомиться.", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+        res.add(new ChatMessage("Привет. Имя странное, это настораживает.", System.currentTimeMillis(), ChatMessage.Type.SENT));
+        res.add(new ChatMessage("И так сойдет.", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+
+        return res;
+    }
 
     private static List<UserDTO> createMockMatches() {
         String[] matchName = {"Августа", "Аврора", "Агата", "Агна", "Агнесса", "Агнешка", "Мавра", "Магда", "Магдалена", "Магура", "Мадина", "Мадлена", "Майда", "Майя", "Малика", "Малуша", "Агния", "Агриппина", "Ада", "Адела"};

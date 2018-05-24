@@ -39,4 +39,20 @@ public class AmurAPI {
         queue.add(stringRequest);
         base_url = future.get();
     }
+
+    public static String getBase_url() {
+        return base_url;
+    }
+
+    public static void setBase_url(String base_url) {
+        AmurAPI.base_url = base_url;
+    }
+
+    public static boolean isIs_url_resolved() {
+        return is_url_resolved;
+    }
+
+    public static void setIs_url_resolved(boolean is_url_resolved) {
+        AmurAPI.is_url_resolved = is_url_resolved;
+    }
 }
