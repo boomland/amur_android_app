@@ -9,7 +9,6 @@ import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -35,7 +34,7 @@ public class JsonRequester {
     }
 
     public static ArrayList<ChatMessage> requestMessages(MainUserDTO mainUser, UserDTO buddy) {
-        ArrayList<ChatMessage> res = new ArrayList<>();
+        ArrayList<ChatMessage> res;
 
         res = createMockMessages();
 
@@ -43,7 +42,7 @@ public class JsonRequester {
     }
 
     public static List<UserDTO> requestMatches(MainUserDTO mainUser) {
-        List<UserDTO> res = new ArrayList<>();
+        List<UserDTO> res;
 
         res = createMockMatches();
 
@@ -98,9 +97,6 @@ public class JsonRequester {
         };
     }
 
-
-
-
     private static ArrayList<ChatMessage> createMockMessages() {
         ArrayList<ChatMessage> res = new ArrayList<>();
         res.add(new ChatMessage("Привет. Меня зовут Зухра. Давай знакомиться.", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
@@ -119,7 +115,7 @@ public class JsonRequester {
         UserDTO cur;
         ArrayList<String> curPhotoUrls;
         for (int i = 0; i < matchName.length; ++i) {
-            curPhotoUrls = new ArrayList<String>();
+            curPhotoUrls = new ArrayList<>();
             curPhotoUrls.add(matchPhotoUrl[i]);
 
             cur = new UserDTO();
