@@ -42,6 +42,7 @@ import dating_ml.ru.amur.ProfileActivity;
 import dating_ml.ru.amur.R;
 import dating_ml.ru.amur.TinderAPI;
 import dating_ml.ru.amur.adapter.UserCardAdapter;
+import dating_ml.ru.amur.dto.MainUserDTO;
 import dating_ml.ru.amur.dto.UserDTO;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -54,8 +55,9 @@ public class MainFragment extends AbstractTabFragment {
     private UserCardAdapter adapter;
 
     RequestQueue queue;
-    String tinder_id;
-    String tinder_token;
+
+    MainUserDTO mainUser;
+
     String base_url;
     List<UserDTO> spots;
     boolean portion_acquired;
@@ -74,8 +76,8 @@ public class MainFragment extends AbstractTabFragment {
         queue = Volley.newRequestQueue(getContext());
         spots = new ArrayList<>();
 
-        tinder_id = ((MainActivity)getActivity()).tinder_id;
-        tinder_token = ((MainActivity)getActivity()).tinder_token;
+
+        mainUser = ((MainActivity)getActivity()).mainUser;
         base_url = ((MainActivity)getActivity()).base_url;
 
         portion_acquired = false;
@@ -153,15 +155,15 @@ public class MainFragment extends AbstractTabFragment {
                 disliked_ids.clear();
 
                 json_req = new JSONObject()
-                        .put("tinder_id", tinder_id)
-                        .put("tinder_auth_token", tinder_token)
+                        .put("tinder_id", mainUser.getTinderId())
+                        .put("tinder_auth_token", mainUser.getTinderToken())
                         .put("action", "GET_ENCOUNTERS")
                         .put("votes_data", votes)
                         .toString();
             } else {
                 json_req = new JSONObject()
-                        .put("tinder_id", tinder_id)
-                        .put("tinder_auth_token", tinder_token)
+                        .put("tinder_id", mainUser.getTinderId())
+                        .put("tinder_auth_token", mainUser.getTinderToken())
                         .put("action", "GET_ENCOUNTERS")
                         .toString();
             }
@@ -273,7 +275,7 @@ public class MainFragment extends AbstractTabFragment {
                     liked_ids.add(id);
                     JsonRequest like_request = TinderAPI.createSimpleGetApiCall(
                             "https://api.gotinder.com/like/" + id,
-                            tinder_token);
+                            mainUser.getTinderToken());
                     queue.add(like_request);
                 }
                 if (direction.toString().compareTo("Left") == 0) {
@@ -283,7 +285,7 @@ public class MainFragment extends AbstractTabFragment {
 
                     JsonRequest dislike_request = TinderAPI.createSimpleGetApiCall(
                             "https://api.gotinder.com/pass/" + id,
-                            tinder_token);
+                            mainUser.getTinderToken());
                     queue.add(dislike_request);
                 }
 

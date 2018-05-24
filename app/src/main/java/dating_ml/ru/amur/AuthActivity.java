@@ -42,19 +42,18 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import dating_ml.ru.amur.dto.MainUserDTO;
+
 public class AuthActivity extends AppCompatActivity {
+    public CallbackManager callbackManager;
+    public LoginButton loginButton;
+    public RequestQueue queue;
 
+    public MainUserDTO mainUser;
 
-    CallbackManager callbackManager;
-    LoginButton loginButton;
-    RequestQueue queue;
-    public String tinder_token;
-    public String tinder_id;
-    String facebook_id;
-    String facebook_token;
-    TextView mTextView;
-    AmurAPI amur_api;
-    String auth_response;
+    public TextView mTextView;
+    public AmurAPI amur_api;
+    public String auth_response;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,19 +62,23 @@ public class AuthActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_auth);
 
-        queue  = Volley.newRequestQueue(this);
+//        startMockMainActivity();
+
+        mainUser = new MainUserDTO();
+
+        queue = Volley.newRequestQueue(this);
         callbackManager = CallbackManager.Factory.create();
         amur_api = new AmurAPI(queue);
 
-        mTextView = (TextView) findViewById(R.id.textView2);
-        loginButton = (LoginButton) findViewById(R.id.login_button);
+        mTextView = findViewById(R.id.textView2);
+        loginButton = findViewById(R.id.login_button);
         loginButton.setReadPermissions("email", "user_birthday", "user_friends", "user_photos", "user_education_history", "user_relationship_details", "user_work_history", "user_likes");
 
         boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
         if (loggedIn) {
             Log.d("loggedIn", "Is already logged in");
-            facebook_token = AccessToken.getCurrentAccessToken().getToken();
-            facebook_id = AccessToken.getCurrentAccessToken().getUserId();
+            mainUser.setFacebookToken(AccessToken.getCurrentAccessToken().getToken());
+            mainUser.setFacebookId(AccessToken.getCurrentAccessToken().getUserId());
             doTinderAuth();
         } else {
             // Callback registration
@@ -83,8 +86,8 @@ public class AuthActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
                     Toast.makeText(getApplicationContext(), "Authentification sucessfull!", Toast.LENGTH_SHORT).show();
-                    facebook_token = loginResult.getAccessToken().getToken();
-                    facebook_id = loginResult.getAccessToken().getUserId();
+                    mainUser.setFacebookToken(loginResult.getAccessToken().getToken());
+                    mainUser.setFacebookId(loginResult.getAccessToken().getUserId());
                     doTinderAuth();
                 }
 
@@ -102,20 +105,19 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     public void doTinderAuth() {
-        mTextView.setText("id: " + facebook_id + ". token: " + facebook_token);
+        mTextView.setText("id: " + mainUser.getFacebookId() + ". token: " + mainUser.getFacebookToken());
 
         Log.d("request", "doTinderAuth");
-        Log.d("request", facebook_id);
-        Log.d("request", facebook_token);
+        Log.d("request", mainUser.getFacebookId());
+        Log.d("request", mainUser.getFacebookToken());
 
         JsonRequest tinder_request = createCustomJsonRequest("https://api.gotinder.com/auth",
-                "{\"facebook_id\": \"" + facebook_id + "\", \"facebook_token\": \"" + facebook_token + "\"}",
+                "{\"facebook_id\": \"" + mainUser.getFacebookId() + "\", \"facebook_token\": \"" + mainUser.getFacebookToken() + "\"}",
                 createTinderAuthResponceListener(),
                 createTinderAuthErrorListener());
 
         queue.add(tinder_request);
         mTextView.setText("Tinder auth request set.");
-
     }
 
     public Response.Listener<String> createTinderAuthResponceListener() {
@@ -125,13 +127,13 @@ public class AuthActivity extends AppCompatActivity {
                 mTextView.setText("Came sucessful responce from Tinder");
                 try {
                     JSONObject obj = new JSONObject(response);
-                    tinder_token = obj.getString("token");
-                    tinder_id = obj.getJSONObject("user").getString("_id");
+                    mainUser.setTinderToken(obj.getString("token"));
+                    mainUser.setTinderId(obj.getJSONObject("user").getString("_id"));
 
                 } catch (JSONException e) {
                     mTextView.setText("Some exception caused by parsing responce from Tinder: " + e.getMessage());
                 }
-                mTextView.setText("tinder_id: " + tinder_id + ".\n Tinder token: " + tinder_token);
+                mTextView.setText("tinder_id: " + mainUser.getTinderId() + ".\n Tinder token: " + mainUser.getFacebookToken());
 
                 resolveAmurUrl();
             }
@@ -148,12 +150,13 @@ public class AuthActivity extends AppCompatActivity {
                         amur_api.base_url = response;
                         performAmurAuth();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work! " + error.toString());
-            }
-        });
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        mTextView.setText("That didn't work! " + error.toString());
+                    }
+                });
 
         queue.add(stringRequest);
     }
@@ -172,7 +175,6 @@ public class AuthActivity extends AppCompatActivity {
                         + ">>" + error.getCause()
                         + ">>" + error.getMessage());
                 */
-
 
                 if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                     mTextView.setText("Time out or no connection");
@@ -193,12 +195,7 @@ public class AuthActivity extends AppCompatActivity {
                                                       String data,
                                                       Response.Listener<String> listener,
                                                       Response.ErrorListener error_listener) {
-
-        return new JsonRequest(Request.Method.POST,
-                request_url,
-                data,
-                listener,
-                error_listener) {
+        return new JsonRequest(Request.Method.POST, request_url, data, listener, error_listener) {
             @Override
             public int compareTo(@NonNull Object o) {
                 return 0;
@@ -208,8 +205,7 @@ public class AuthActivity extends AppCompatActivity {
             protected Response parseNetworkResponse(NetworkResponse response) {
                 try {
                     String jsonString = new String(response.data, "UTF-8");
-                    return Response.success(jsonString,
-                            HttpHeaderParser.parseCacheHeaders(response));
+                    return Response.success(jsonString, HttpHeaderParser.parseCacheHeaders(response));
                 } catch (UnsupportedEncodingException e) {
                     return Response.error(new ParseError(e));
                 }
@@ -232,17 +228,14 @@ public class AuthActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 auth_response = response;
+                try {
+                    completeMainUserDTO(auth_response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 mTextView.setText(response);
-                Intent main = new Intent(getApplicationContext(), MainActivity.class);
 
-                Bundle b = new Bundle();
-                b.putString("tinder_id", tinder_id);
-                b.putString("tinder_token", tinder_token);
-                b.putString("base_url", amur_api.base_url);
-                b.putString("auth_response", auth_response);
-                main.putExtras(b);
-
-                startActivity(main);
+                startMainActivity();
                 Log.d("MAINACTIVITY", "It starts..............................");
             }
         };
@@ -253,8 +246,8 @@ public class AuthActivity extends AppCompatActivity {
         try {
             String amur_login_str = new JSONObject()
                     .put("action", "SET_AUTH_TOKEN")
-                    .put("tinder_id", tinder_id)
-                    .put("tinder_auth_token", tinder_token)
+                    .put("tinder_id", mainUser.getTinderId())
+                    .put("tinder_auth_token", mainUser.getTinderToken())
                     .toString();
             JsonRequest amur_request = createCustomJsonRequest(
                     amur_api.base_url + "/api",
@@ -267,6 +260,42 @@ public class AuthActivity extends AppCompatActivity {
             mTextView.setText("Amur server request construct fail!");
         }
 
+    }
+
+    void startMainActivity() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
+        Bundle b = new Bundle();
+        b.putParcelable(Constants.MAIN_USER, mainUser);
+        b.putString("base_url", amur_api.base_url);
+        b.putString("auth_response", auth_response);
+        intent.putExtras(b);
+
+        startActivity(intent);
+    }
+
+    void startMockMainActivity() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
+        Bundle b = new Bundle();
+        b.putParcelable(Constants.MAIN_USER, MainUserDTO.getMockMainUserDTO());
+        intent.putExtras(b);
+
+        startActivity(intent);
+    }
+
+    private void completeMainUserDTO(String auth_response) throws JSONException {
+        JSONObject auth_json = new JSONObject(auth_response);
+
+        mainUser.setName(auth_json.getJSONObject("data").getString("name"));
+        mainUser.setBirthDate(auth_json.getJSONObject("data").getString("birthday").substring(0, 10));
+        mainUser.setGender(auth_json.getJSONObject("data").getInt("gender"));
+        mainUser.setBio("");
+        mainUser.setMaxAge(auth_json.getJSONObject("data").getInt("age_max"));
+        mainUser.setMinAge(auth_json.getJSONObject("data").getInt("age_min"));
+        mainUser.setMaxDist(auth_json.getJSONObject("data").getInt("distance_filter"));
+        int main_photo_idx = auth_json.getJSONObject("data").getInt("main_photo_idx");
+        mainUser.setMainPhotoUrl(auth_json.getJSONObject("data").getJSONArray("photos").get(main_photo_idx).toString());
     }
 
     @Override
