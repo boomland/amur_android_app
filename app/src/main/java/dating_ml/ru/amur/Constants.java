@@ -6,4 +6,5 @@ public class Constants {
     public final static int MATCHES_TAB_INDEX = 2;
 
     public final static String MAIN_USER = "MAIN_USER";
+    public final static String BUDDY = "BUDDY";
 }

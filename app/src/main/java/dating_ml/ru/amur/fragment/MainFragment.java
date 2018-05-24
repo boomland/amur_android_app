@@ -173,7 +173,7 @@ public class MainFragment extends AbstractTabFragment {
                     encountersListener(),
                     encountersError()
             );
-            amur_get_enc.setRetryPolicy(new DefaultRetryPolicy(30000, 0, 0));
+            amur_get_enc.setRetryPolicy(new DefaultRetryPolicy(30000, 3, 0));
             queue.add(amur_get_enc);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -289,6 +289,7 @@ public class MainFragment extends AbstractTabFragment {
                     queue.add(dislike_request);
                 }
 
+                Log.d("Check getCount()", "topIndex = " + String.valueOf(cardStackView.getTopIndex()) + ", getCount = " + adapter.getCount());
                 if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
                     Log.d("CardStackView", "NEW PORTION ACQUIRED!");
                     portion_acquired = true;
