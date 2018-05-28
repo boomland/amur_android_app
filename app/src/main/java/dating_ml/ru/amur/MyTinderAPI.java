@@ -33,10 +33,9 @@ public class MyTinderAPI {
     private static final String authEnd = "/auth";
     private static final String recEnd = "/user/recs";
     private static final String sendMessageToMatchEnd = "/user/matches/";
-    private static final String profileEnd = "/user/";
+    private static final String profileEnd = "/profile";
     private static final String updatesEnd = "/updates";
 
-    private ArrayList<User> matches;
 
     private RequestQueue queue;
 
@@ -44,54 +43,20 @@ public class MyTinderAPI {
     public MyTinderAPI(Context context) {
         Log.d("MyTinderAPI", "this is constructor");
         queue = Volley.newRequestQueue(context);
-        matches = new ArrayList<>();
-    }
-
-    public MainUser getMainUser(final String authToken) {
-        Log.d("MyTinderAPI", "getMainuserDTO");
-
-        MainUser res = new MainUser();
-
-        return res;
-    }
-
-    public ArrayList<ChatMessage> getMessages(final String authToken, final String useId) {
-        Log.d("MyTinderAPI", "getMessages");
-
-        ArrayList<ChatMessage> res;
-
-        res = createMockMessages();
-
-
-        return res;
-    }
-
-    public ArrayList<User> getMatches(final String authToken) {
-        Log.d("MyTinderAPI", "getMatches");
-        ArrayList<User> res;
-
-        queue.add(createMatchesRequest(authToken));
-
-//        res = createMockMatches();
-
-        return matches;
     }
 
     // ------------------------------ Supportive ---------------------------------------------------
 
-    private JsonRequest createMatchesRequest(final String authToken) {
-        return createSimpleAPIRequest(Request.Method.POST, tinderURL + updatesEnd, "{\"last_activity_date\": \"\"}", authToken, createMatchesListener(), createMatchesErrorListener());
+    public void doProfileRequest(final String authToken, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        JsonRequest request = createSimpleAPIRequest(Request.Method.GET, tinderURL + profileEnd, "", authToken, listener, errorListener);
+        queue.add(request);
     }
 
-    private Response.ErrorListener createMatchesErrorListener() {
-        return new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("MyTinderAPI", "MatchesErrorListener Error: " + error.toString());
-            }
-        };
+    public JsonRequest createUpdatesRequest(final String authToken, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        return createSimpleAPIRequest(Request.Method.POST, tinderURL + updatesEnd, "{\"last_activity_date\": \"\"}", authToken, listener, errorListener);
     }
 
+    /*
     private Response.Listener<String> createMatchesListener() {
         return new Response.Listener<String>() {
             @Override
@@ -154,6 +119,7 @@ public class MyTinderAPI {
             }
         };
     }
+    */
 
     public static JsonRequest createSimpleAPIRequest(int method,
                                                      final String requestUrl,

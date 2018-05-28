@@ -107,12 +107,15 @@ public class AuthActivity extends AppCompatActivity {
                 try {
                     JSONObject obj = new JSONObject(response);
 
-                    //TODO: в этом месте запрости у TinderAPI /profile и распрасить mainUser
+                    //TODO: в этом месте запросить у TinderAPI /profile и распрасить mainUser
 
-                    mainUser.setToken(obj.getString("token"));
-                    mainUser.setId(obj.getJSONObject("user").getString("_id"));
+                    String authToken = obj.getString("token");
 
-                    startMainActivity();
+                    MyTinderAPI tinderAPI = new MyTinderAPI(getApplicationContext());
+                    tinderAPI.doProfileRequest(authToken, createDoProfileRequestListener(), createDoProfileRequestErrorListener());
+
+//                    mainUser.setToken(obj.getString("token"));
+//                    mainUser.setId(obj.getJSONObject("user").getString("_id"));
 
                     Log.d("mTextView", "This is mainUser.toString(): " + mainUser.toString());
 
@@ -122,6 +125,31 @@ public class AuthActivity extends AppCompatActivity {
 
                 Log.d("mTextView", "tinder_id: " + mainUser.getId() + ".\n Tinder token: " + mainUser.getFacebookToken());
                 requester.resolveAmurUrl(createResolveAmurUrlResponseListener(), createResolveAmurUrlErrorListener());
+            }
+        };
+    }
+
+    private Response.ErrorListener createDoProfileRequestErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("AuthActivity", "Error while doing ProfileRequest: " + error.getMessage());
+            }
+        };
+    }
+
+    private Response.Listener<String> createDoProfileRequestListener() {
+        return new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    Log.d("AuthActivity", "Successful ProfileRequest: response = " + response);
+                    mainUser = JsonParser.parseMainUserFromProfile(new JSONObject(response));
+                    startMainActivity();
+                } catch (JSONException e) {
+                    Log.d("AuthActivity", "Error while converting responce to JSONObject to pass it into parseMainUserFromProfile");
+                    e.printStackTrace();
+                }
             }
         };
     }
