@@ -158,14 +158,14 @@ public class MainFragment extends AbstractTabFragment {
                 json_req = new JSONObject()
                         .put("tinder_id", mainUser.getTinderId())
                         .put("tinder_auth_token", mainUser.getTinderToken())
-                        .put("action", "GET_ENCOUNTERS")
+                        .put("action", "GET_RECS")
                         .put("votes_data", votes)
                         .toString();
             } else {
                 json_req = new JSONObject()
                         .put("tinder_id", mainUser.getTinderId())
                         .put("tinder_auth_token", mainUser.getTinderToken())
-                        .put("action", "GET_ENCOUNTERS")
+                        .put("action", "GET_RECS")
                         .toString();
             }
             JsonRequest amur_get_enc = JsonRequester.createCustomJsonRequest(
