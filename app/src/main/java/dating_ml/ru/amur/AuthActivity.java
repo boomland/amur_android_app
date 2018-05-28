@@ -50,7 +50,7 @@ public class AuthActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
         loginButton = findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email", "user_birthday", "user_friends", "user_photos", "user_education_history", "user_relationship_details", "user_work_history", "user_likes");
+        loginButton.setReadPermissions("email", "user_updates", "user_birthday", "user_friends", "user_photos", "user_education_history", "user_relationship_details", "user_work_history", "user_likes");
 
         boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
         if (loggedIn) {
@@ -103,6 +103,10 @@ public class AuthActivity extends AppCompatActivity {
                     JSONObject obj = new JSONObject(response);
                     mainUser.setTinderToken(obj.getString("token"));
                     mainUser.setTinderId(obj.getJSONObject("user").getString("_id"));
+
+                    startMainActivity();
+
+                    Log.d("mTextView", "This is mainUser.toString(): " + mainUser.toString());
 
                 } catch (JSONException e) {
                     Log.d("mTextView", "Some exception caused by parsing responce from Tinder: " + e.getMessage());
@@ -188,8 +192,9 @@ public class AuthActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Log.d("mTextView", response);
+                Log.d("mTextView", mainUser.toString());
 
-                startMainActivity();
+//                startMainActivity();
                 Log.d("MAINACTIVITY", "It starts..............................");
             }
         };
@@ -202,6 +207,16 @@ public class AuthActivity extends AppCompatActivity {
         b.putParcelable(Constants.MAIN_USER, mainUser);
         b.putString("base_url", AmurAPI.base_url);
         b.putString("auth_response", auth_response);
+        intent.putExtras(b);
+
+        startActivity(intent);
+    }
+
+    void startPlayGroundActivity() {
+        Intent intent = new Intent(getApplicationContext(), PlayGroundActivity.class);
+
+        Bundle b = new Bundle();
+        b.putParcelable(Constants.MAIN_USER, mainUser);
         intent.putExtras(b);
 
         startActivity(intent);

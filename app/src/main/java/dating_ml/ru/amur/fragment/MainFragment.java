@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import dating_ml.ru.amur.AuthActivity;
+import dating_ml.ru.amur.Constants;
 import dating_ml.ru.amur.JsonRequester;
 import dating_ml.ru.amur.MainActivity;
 import dating_ml.ru.amur.ProfileActivity;

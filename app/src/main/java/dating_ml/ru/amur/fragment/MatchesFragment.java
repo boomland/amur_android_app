@@ -24,6 +24,7 @@ import dating_ml.ru.amur.ChatActivity;
 import dating_ml.ru.amur.Constants;
 import dating_ml.ru.amur.JsonRequester;
 import dating_ml.ru.amur.MainActivity;
+import dating_ml.ru.amur.MyTinderAPI;
 import dating_ml.ru.amur.R;
 import dating_ml.ru.amur.dto.MatchDTO;
 import dating_ml.ru.amur.dto.UserDTO;
@@ -31,6 +32,7 @@ import dating_ml.ru.amur.dto.UserDTO;
 
 public class MatchesFragment extends AbstractTabFragment {
     private static final int LAYOUT = R.layout.fragment_matches;
+    private MyTinderAPI tinderAPI;
 
     public static MatchesFragment getInstance(Context context) {
         Bundle args = new Bundle();
@@ -43,6 +45,13 @@ public class MatchesFragment extends AbstractTabFragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        tinderAPI = new MyTinderAPI(getActivity());
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,7 +59,7 @@ public class MatchesFragment extends AbstractTabFragment {
 
         RecyclerView rv = view.findViewById(R.id.recyclerView);
         rv.setLayoutManager(new LinearLayoutManager(context));
-        rv.setAdapter(new MatchListAdapter(JsonRequester.requestMatches(((MainActivity)getActivity()).mainUser)));
+        rv.setAdapter(new MatchListAdapter(tinderAPI.getMatches(((MainActivity)getActivity()).mainUser.getTinderToken())));
 
         return view;
     }

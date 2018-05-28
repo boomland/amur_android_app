@@ -125,7 +125,6 @@ public class JsonRequester {
             data.add(cur);
         }
 
-
         return data;
     }
 }

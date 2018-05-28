@@ -21,7 +21,7 @@ public class UserDTO implements Parcelable {
     private String workplace;
     private String placeOfStudy;
     private int dist;
-    private Date birthDate;
+    private String birthDate;
     private String tinderId;
     private int gender;
     private String bio;
@@ -44,7 +44,7 @@ public class UserDTO implements Parcelable {
 
 
         this.dist = dist;
-        this.birthDate = birthDate;
+        this.birthDate = birthDate.toString();
         this.tinderId = tinderId;
         this.gender = gender;
         this.bio = bio;
@@ -67,7 +67,7 @@ public class UserDTO implements Parcelable {
         return dist;
     }
 
-    public Date getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
@@ -108,7 +108,7 @@ public class UserDTO implements Parcelable {
     }
 
     public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
+        this.birthDate = birthDate.toString();
     }
 
     public void setTinderId(String tinderId) {
@@ -174,7 +174,7 @@ public class UserDTO implements Parcelable {
         res += "userAvatar: " + userAvatar + ", ";
         res += "url: " + url + ", ";
         res += "dist: " + dist + ", ";
-        res += "birthDate: " + birthDate.toString() + ", ";
+        res += "birthDate: " + birthDate + ", ";
         res += "tinderId: " + tinderId + ", ";
         res += "gender: " + gender + ", ";
         res += "bio: " + bio + ", ";
@@ -199,7 +199,7 @@ public class UserDTO implements Parcelable {
         dest.writeString(this.userAvatar);
         dest.writeString(this.url);
         dest.writeInt(this.dist);
-        dest.writeLong(this.birthDate != null ? this.birthDate.getTime() : -1);
+        dest.writeString(this.birthDate);
         dest.writeString(this.tinderId);
         dest.writeInt(this.gender);
         dest.writeString(this.bio);
@@ -214,8 +214,7 @@ public class UserDTO implements Parcelable {
         this.userAvatar = in.readString();
         this.url = in.readString();
         this.dist = in.readInt();
-        long tmpBirthDate = in.readLong();
-        this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
+        this.birthDate = in.readString();
         this.tinderId = in.readString();
         this.gender = in.readInt();
         this.bio = in.readString();
