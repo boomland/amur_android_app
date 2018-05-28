@@ -21,7 +21,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import dating_ml.ru.amur.dto.MainUser;
 import dating_ml.ru.amur.dto.MainUserDTO;
+import dating_ml.ru.amur.dto.RecUser;
+import dating_ml.ru.amur.dto.User;
 
 public class PlayGroundActivity extends AppCompatActivity {
     MainUserDTO mainUser;
@@ -35,7 +38,38 @@ public class PlayGroundActivity extends AppCompatActivity {
 
         tinderAPI = new MyTinderAPI(getApplicationContext());
 
+        User user = new User();
+        user.setBio("This is my bio");
+        user.setName("Daniel");
+        user.setBirthDate("25.02.1998");
+        user.setGender(0);
 
+        RecUser recUser = new RecUser();
+        recUser.setBio("This is my bio");
+        recUser.setDistance(100);
+
+        MainUser mainUser = new MainUser();
+        mainUser.setAgeFilterMax(25);
+        mainUser.setAgeFilterMin(18);
+        mainUser.setFacebookId("facebookId");
+        mainUser.setDistanceFilter(250);
+
+        Log.d("PlayGround", "this is User: " + user.toString());
+        Log.d("PlayGround", "this is RecUser: " + recUser.toString());
+        Log.d("PlayGround", "this is MainUser: " + mainUser.toString());
+
+        Bundle b = new Bundle();
+        b.putParcelable("user", user);
+        b.putParcelable("recUser", recUser);
+        b.putParcelable("mainUser", mainUser);
+
+        user = b.getParcelable("user");
+        recUser = b.getParcelable("recUser");
+        mainUser = b.getParcelable("mainUser");
+
+        Log.d("PlayGround", "this is User: " + user.toString());
+        Log.d("PlayGround", "this is RecUser: " + recUser.toString());
+        Log.d("PlayGround", "this is MainUser: " + mainUser.toString());
     }
 
     private void receiveData() {
