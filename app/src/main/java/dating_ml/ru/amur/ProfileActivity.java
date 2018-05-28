@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import dating_ml.ru.amur.adapter.ImageAdapter;
-import dating_ml.ru.amur.dto.UserDTO;
+import dating_ml.ru.amur.dto.RecUser;
 
 public class ProfileActivity extends AppCompatActivity {
     final static public String USER_INFO = "USER_INFO";
@@ -20,33 +20,33 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView mBiography;
 
     private ViewPager mProfilePhotosPager;
-    private UserDTO mUser;
+    private RecUser mRecUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_actvity);
 
-        mUser = getIntent().getParcelableExtra(USER_INFO);
-        Log.d("UserProfileActivity2", mUser.toString());
+        mRecUser = getIntent().getParcelableExtra(USER_INFO);
+        Log.d("UserProfileActivity2", mRecUser.toString());
 
         mNameAndAge = findViewById(R.id.name_and_age);
-        mNameAndAge.setText(mUser.getName() + ", " + mUser.getAge());
+        mNameAndAge.setText(mRecUser.getName() + ", " + mRecUser.getBirthDate());
 
         mWorkplace = findViewById(R.id.workplace);
-        mWorkplace.setText(mUser.getWorkplace());
+        mWorkplace.setText("Google");
 
         mPlaceOfStudy = findViewById(R.id.place_of_study);
-        mPlaceOfStudy.setText(mUser.getPlaceOfStudy());
+        mPlaceOfStudy.setText("МГУ");
 
         mDistanceToYou= findViewById(R.id.distance_to_you);
-        mDistanceToYou.setText(mDistText + String.valueOf(mUser.getDist()));
+        mDistanceToYou.setText(mDistText + String.valueOf(mRecUser.getDistance()));
 
         mBiography = findViewById(R.id.biography);
-        mBiography.setText(mUser.getBio());
+        mBiography.setText(mRecUser.getBio());
 
         mProfilePhotosPager = findViewById(R.id.profile_photos_pager);
-        ImageAdapter imageAdapter = new ImageAdapter(this, mUser.getPhotoUrls());
+        ImageAdapter imageAdapter = new ImageAdapter(this, mRecUser.getPhotos());
         mProfilePhotosPager.setAdapter(imageAdapter);
     }
 

@@ -23,15 +23,20 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import dating_ml.ru.amur.dto.MainUserDTO;
+
+import java.util.ArrayList;
+
+import dating_ml.ru.amur.dto.MainUser;
 
 public class AuthActivity extends AppCompatActivity {
     public CallbackManager callbackManager;
     public LoginButton loginButton;
     public JsonRequester requester;
-    public MainUserDTO mainUser;
+    public MainUser mainUser;
     public String auth_response;
 
     @Override
@@ -45,7 +50,7 @@ public class AuthActivity extends AppCompatActivity {
 
 //        startMockMainActivity();
 
-        mainUser = new MainUserDTO();
+        mainUser = new MainUser();
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -101,8 +106,11 @@ public class AuthActivity extends AppCompatActivity {
                 Log.d("mTextView", "Came sucessful responce from Tinder");
                 try {
                     JSONObject obj = new JSONObject(response);
-                    mainUser.setTinderToken(obj.getString("token"));
-                    mainUser.setTinderId(obj.getJSONObject("user").getString("_id"));
+
+                    //TODO: в этом месте запрости у TinderAPI /profile и распрасить mainUser
+
+                    mainUser.setToken(obj.getString("token"));
+                    mainUser.setId(obj.getJSONObject("user").getString("_id"));
 
                     startMainActivity();
 
@@ -112,7 +120,7 @@ public class AuthActivity extends AppCompatActivity {
                     Log.d("mTextView", "Some exception caused by parsing responce from Tinder: " + e.getMessage());
                 }
 
-                Log.d("mTextView", "tinder_id: " + mainUser.getTinderId() + ".\n Tinder token: " + mainUser.getFacebookToken());
+                Log.d("mTextView", "tinder_id: " + mainUser.getId() + ".\n Tinder token: " + mainUser.getFacebookToken());
                 requester.resolveAmurUrl(createResolveAmurUrlResponseListener(), createResolveAmurUrlErrorListener());
             }
         };
@@ -165,8 +173,8 @@ public class AuthActivity extends AppCompatActivity {
         try {
             String amur_login_str = new JSONObject()
                     .put("action", "SET_AUTH_TOKEN")
-                    .put("tinder_id", mainUser.getTinderId())
-                    .put("tinder_auth_token", mainUser.getTinderToken())
+                    .put("tinder_id", mainUser.getId())
+                    .put("tinder_auth_token", mainUser.getToken())
                     .toString();
             JsonRequest amur_request = requester.createCustomJsonRequest(
                     AmurAPI.base_url + "/api",
@@ -226,7 +234,7 @@ public class AuthActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
         Bundle b = new Bundle();
-        b.putParcelable(Constants.MAIN_USER, MainUserDTO.getMockMainUserDTO());
+        b.putParcelable(Constants.MAIN_USER, MainUser.getMockMainUser());
         intent.putExtras(b);
 
         startActivity(intent);
@@ -239,11 +247,17 @@ public class AuthActivity extends AppCompatActivity {
         mainUser.setBirthDate(auth_json.getJSONObject("data").getString("birthday").substring(0, 10));
         mainUser.setGender(auth_json.getJSONObject("data").getInt("gender"));
         mainUser.setBio("");
-        mainUser.setMaxAge(auth_json.getJSONObject("data").getInt("age_max"));
-        mainUser.setMinAge(auth_json.getJSONObject("data").getInt("age_min"));
-        mainUser.setMaxDist(auth_json.getJSONObject("data").getInt("distance_filter"));
-        int main_photo_idx = auth_json.getJSONObject("data").getInt("main_photo_idx");
-        mainUser.setMainPhotoUrl(auth_json.getJSONObject("data").getJSONArray("photos").get(main_photo_idx).toString());
+        mainUser.setAgeFilterMax(auth_json.getJSONObject("data").getInt("age_max"));
+        mainUser.setAgeFilterMin(auth_json.getJSONObject("data").getInt("age_min"));
+        mainUser.setDistanceFilter(auth_json.getJSONObject("data").getInt("distance_filter"));
+
+        ArrayList<String> photos = new ArrayList<>();
+        JSONArray jphotos = auth_json.getJSONObject("data").getJSONArray("photos");
+        for (int i = 0; i < jphotos.length(); ++i) {
+            photos.add(jphotos.getJSONObject(i).getString("url"));
+        }
+
+        mainUser.setPhotos(photos);
     }
 
     @Override

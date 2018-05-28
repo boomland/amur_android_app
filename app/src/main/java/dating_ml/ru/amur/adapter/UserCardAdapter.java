@@ -11,9 +11,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import dating_ml.ru.amur.R;
-import dating_ml.ru.amur.dto.UserDTO;
+import dating_ml.ru.amur.dto.RecUser;
 
-public class UserCardAdapter extends ArrayAdapter<UserDTO> {
+public class UserCardAdapter extends ArrayAdapter<RecUser> {
 
     public UserCardAdapter(Context context) {
         super(context, 0);
@@ -32,11 +32,11 @@ public class UserCardAdapter extends ArrayAdapter<UserDTO> {
             holder = (ViewHolder) contentView.getTag();
         }
 
-        UserDTO user = getItem(position);
+        RecUser user = getItem(position);
 
-        holder.name.setText(user.name);
-        holder.city.setText(user.userAvatar);
-        Glide.with(getContext()).load(user.url).into(holder.image);
+        holder.name.setText(user.getName());
+        holder.city.setText(user.getPhotos().get(0));
+        Glide.with(getContext()).load(user.getPhotos().get(0)).into(holder.image);
 
         return contentView;
     }

@@ -3,7 +3,6 @@ package dating_ml.ru.amur.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,9 @@ import com.bumptech.glide.Glide;
 
 import java.util.Objects;
 
-import dating_ml.ru.amur.Constants;
 import dating_ml.ru.amur.MainActivity;
 import dating_ml.ru.amur.R;
-import dating_ml.ru.amur.dto.MainUserDTO;
+import dating_ml.ru.amur.dto.MainUser;
 
 
 public class ProfileFragment extends AbstractTabFragment {
@@ -39,7 +37,7 @@ public class ProfileFragment extends AbstractTabFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
-        MainUserDTO mainUser = ((MainActivity)getActivity()).mainUser;
+        MainUser mainUser = ((MainActivity)getActivity()).mainUser;
 
         ImageView avatar = view.findViewById(R.id.profile_user_photo);
         TextView name = view.findViewById(R.id.profile_name);
@@ -49,13 +47,18 @@ public class ProfileFragment extends AbstractTabFragment {
         TextView ageFilter = view.findViewById(R.id.profile_age_filter);
         TextView maxDist = view.findViewById(R.id.profile_distance_filter);
 
-        Glide.with(Objects.requireNonNull(getActivity())).load(mainUser.getMainPhotoUrl()).into(avatar);
+        try {
+            Glide.with(Objects.requireNonNull(getActivity())).load(mainUser.getPhotos().get(0)).into(avatar);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         name.setText(mainUser.getName());
         gender.setText(String.valueOf(mainUser.getGender()));
         birthDay.setText(mainUser.getBirthDate());
         bio.setText(mainUser.getBio());
-        ageFilter.setText("от " + String.valueOf(mainUser.getMinAge()) + " до " + String.valueOf(mainUser.getMaxAge()) + " лет");
-        maxDist.setText(String.valueOf(mainUser.getMaxDist()));
+        ageFilter.setText("от " + String.valueOf(mainUser.getAgeFilterMin()) + " до " + String.valueOf(mainUser.getAgeFilterMax()) + " лет");
+        maxDist.setText(String.valueOf(mainUser.getDistanceFilter()));
 
         return view;
     }

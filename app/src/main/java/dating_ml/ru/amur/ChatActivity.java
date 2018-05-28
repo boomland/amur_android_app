@@ -7,12 +7,12 @@ import java.util.ArrayList;
 
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
-import dating_ml.ru.amur.dto.MainUserDTO;
-import dating_ml.ru.amur.dto.UserDTO;
+import dating_ml.ru.amur.dto.MainUser;
+import dating_ml.ru.amur.dto.User;
 
 public class ChatActivity extends AppCompatActivity {
-    private MainUserDTO mMainUser;
-    private UserDTO mBuddy;
+    private MainUser mMainUser;
+    private User mBuddy;
     private ChatView mChatView;
     private ArrayList<ChatMessage> mMessages;
 

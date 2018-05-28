@@ -36,16 +36,15 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import dating_ml.ru.amur.AuthActivity;
-import dating_ml.ru.amur.Constants;
 import dating_ml.ru.amur.JsonRequester;
 import dating_ml.ru.amur.MainActivity;
 import dating_ml.ru.amur.ProfileActivity;
 import dating_ml.ru.amur.R;
 import dating_ml.ru.amur.TinderAPI;
 import dating_ml.ru.amur.adapter.UserCardAdapter;
-import dating_ml.ru.amur.dto.MainUserDTO;
-import dating_ml.ru.amur.dto.UserDTO;
+import dating_ml.ru.amur.dto.MainUser;
+import dating_ml.ru.amur.dto.RecUser;
+import dating_ml.ru.amur.dto.User;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -58,10 +57,10 @@ public class MainFragment extends AbstractTabFragment {
 
     RequestQueue queue;
 
-    MainUserDTO mainUser;
+    MainUser mainUser;
 
     String base_url;
-    List<UserDTO> spots;
+    List<RecUser> spots;
     boolean portion_acquired;
 
     ArrayList<String> liked_ids;
@@ -111,22 +110,34 @@ public class MainFragment extends AbstractTabFragment {
         this.context = context;
     }
 
-    private UserDTO createUser() {
-        return new UserDTO("Yasaka Shrine", "Kyoto", "https://source.unsplash.com/Xq1ntWruZQI/600x800");
+    private RecUser createUser() {
+        RecUser recUser = new RecUser();
+        recUser.setName("Yasaka Shrine");
+        recUser.setBio("Kyoto");
+
+        ArrayList<String> photos = new ArrayList<>();
+        photos.add("https://source.unsplash.com/Xq1ntWruZQI/600x800");
+        recUser.setPhotos(photos);
+
+        return recUser;
     }
 
-    private List<UserDTO> createUsers() {
-        List<UserDTO> users = new ArrayList<>();
+    private List<RecUser> createUsers() {
+        List<RecUser> users = new ArrayList<>();
 
         String[] matchName = {"Августа", "Аврора", "Агата", "Агна", "Агнесса", "Агнешка", "Мавра", "Магда", "Магдалена", "Магура", "Мадина", "Мадлена", "Майда", "Майя", "Малика", "Малуша", "Агния", "Агриппина", "Ада", "Адела"};
         String[] matchPhotoUrl = {"http://static5.stcont.com/datas/photos/320x320/60/2e/2349714e5ba5cf1398853afbde88b3c5b22.jpg?0", "https://ru.toluna.com/dpolls_images/2016/12/30/df3a8af9-b58c-4c7c-8354-8f8bce5bf7d1.jpg", "https://i1.sndcdn.com/artworks-000058048090-jfr3hd-t500x500.jpg", "http://re-actor.net/uploads/posts/2010-11/1290934531_4.jpg", "http://mtdata.ru/u24/photoA813/20118705550-0/original.jpeg", "https://scontent-lhr3-1.cdninstagram.com/t51.2885-15/e15/14279116_1581249918848266_1412290040_n.jpg", "http://lh6.googleusercontent.com/-XZjOvUZfzUM/AAAAAAAAAAI/AAAAAAAAAAw/m3wtubs_m_I/photo.jpg", "https://mirra.ru/upload/iblock/855/855442a50ad369a10c572d2d280d73c6.jpg", "https://i04.fotocdn.net/s12/167/user_l/297/2336958630.jpg", "http://www.i-social.ru/imglib/640/01/18/3E/18366198.jpg", "https://cdn1.thehunt.com/app/public/system/zine_images/1043321/original/59ad0f0bf6b310d8eb7b154dd743cedf.jpg", "http://s3.favim.com/orig/39/beautiful-blonde-cute-flowers-girl-Favim.com-324784.jpg", "http://mir-kartinok.my1.ru/_ph/208/2/374058882.jpg?1517270667", "https://new-friend.org/media/cache/8e/ad/8eadccd23b89a906242ddce77cb2f5b7.jpg", "https://cdn1.thehunt.com/app/public/system/zine_images/1942103/original/ff474f5c278e5067069527d2ce751060.jpg", "https://i05.fotocdn.net/s16/195/gallery_s/436/76919746.jpg", "https://i11.fotocdn.net/s24/43/gallery_m/277/2595951658.jpg", "http://img2.1001golos.ru/ratings/132000/131887/pic1.jpg", "https://pbs.twimg.com/profile_images/631078393870729217/0panIZJo.jpg", "https://avatarko.ru/img/avatar/18/devushka_shlyapa_17067.jpg"};
 
-        UserDTO cur;
+        RecUser cur;
         for (int i = 0; i < matchName.length; ++i) {
-            cur = new UserDTO();
-            cur.name = matchName[i];
-            cur.url = matchPhotoUrl[i];
-            cur.userAvatar = "26 years";
+            cur = new RecUser();
+            cur.setName(matchName[i]);
+
+            ArrayList<String> photos = new ArrayList<>();
+            photos.add(matchPhotoUrl[i]);
+            cur.setPhotos(photos);
+
+            cur.setBirthDate("25.02.1998");
 
             users.add(cur);
         }
@@ -157,15 +168,15 @@ public class MainFragment extends AbstractTabFragment {
                 disliked_ids.clear();
 
                 json_req = new JSONObject()
-                        .put("tinder_id", mainUser.getTinderId())
-                        .put("tinder_auth_token", mainUser.getTinderToken())
+                        .put("tinder_id", mainUser.getId())
+                        .put("tinder_auth_token", mainUser.getToken())
                         .put("action", "GET_RECS")
                         .put("votes_data", votes)
                         .toString();
             } else {
                 json_req = new JSONObject()
-                        .put("tinder_id", mainUser.getTinderId())
-                        .put("tinder_auth_token", mainUser.getTinderToken())
+                        .put("tinder_id", mainUser.getId())
+                        .put("tinder_auth_token", mainUser.getToken())
                         .put("action", "GET_RECS")
                         .toString();
             }
@@ -220,7 +231,20 @@ public class MainFragment extends AbstractTabFragment {
                                 }
                             }
 
-                            spots.add(new UserDTO(name, id, photo_url, dist, birthDate, id, gender, bio, photoUrls));
+
+                            RecUser recUser = new RecUser();
+                            recUser.setName(name);
+                            recUser.setId(id);
+
+                            recUser.setName(name);
+                            recUser.setId(id);
+                            recUser.setDistance(dist);
+                            recUser.setBirthDate(birthDate.toString());
+                            recUser.setGender(gender);
+                            recUser.setBio(bio);
+                            recUser.setPhotos(photoUrls);
+
+                            spots.add(recUser);
                         }
                         portion_acquired = false;
                     } else {
@@ -273,21 +297,21 @@ public class MainFragment extends AbstractTabFragment {
 
                 if (direction.toString().compareTo("Right") == 0) {
                     // liked
-                    String id = spots.get(cardStackView.getTopIndex() - 1).getTinderId();
+                    String id = spots.get(cardStackView.getTopIndex() - 1).getId();
                     liked_ids.add(id);
                     JsonRequest like_request = TinderAPI.createSimpleGetApiCall(
                             "https://api.gotinder.com/like/" + id,
-                            mainUser.getTinderToken());
+                            mainUser.getToken());
                     queue.add(like_request);
                 }
                 if (direction.toString().compareTo("Left") == 0) {
                     // disliked
-                    String id = spots.get(cardStackView.getTopIndex() - 1).getTinderId();
+                    String id = spots.get(cardStackView.getTopIndex() - 1).getId();
                     disliked_ids.add(id);
 
                     JsonRequest dislike_request = TinderAPI.createSimpleGetApiCall(
                             "https://api.gotinder.com/pass/" + id,
-                            mainUser.getTinderToken());
+                            mainUser.getToken());
                     queue.add(dislike_request);
                 }
 
@@ -314,12 +338,12 @@ public class MainFragment extends AbstractTabFragment {
             public void onCardClicked(int index) {
                 Log.d("CardStackView", "onCardClicked: " + index);
 
-                UserDTO user = spots.get(index);
+                RecUser recUser = spots.get(index);
 
                 Log.d("CardStackView", "onCardClicked: " + index);
-                Log.d("ToursitSpot_user: ", user.toString());
+                Log.d("ToursitSpot_user: ", recUser.toString());
 
-                startUserProfileActivity(user);
+                startUserProfileActivity(recUser);
             }
         });
     }
@@ -338,8 +362,8 @@ public class MainFragment extends AbstractTabFragment {
         }, 1000);
     }
 
-    private LinkedList<UserDTO> extractRemainingUsers() {
-        LinkedList<UserDTO> users = new LinkedList<>();
+    private LinkedList<RecUser> extractRemainingUsers() {
+        LinkedList<RecUser> users = new LinkedList<>();
         for (int i = cardStackView.getTopIndex(); i < adapter.getCount(); i++) {
             users.add(adapter.getItem(i));
         }
@@ -347,7 +371,7 @@ public class MainFragment extends AbstractTabFragment {
     }
 
     private void addFirst() {
-        LinkedList<UserDTO> users = extractRemainingUsers();
+        LinkedList<RecUser> users = extractRemainingUsers();
         users.addFirst(createUser());
         adapter.clear();
         adapter.addAll(users);
@@ -355,7 +379,7 @@ public class MainFragment extends AbstractTabFragment {
     }
 
     private void addLast() {
-        LinkedList<UserDTO> users = extractRemainingUsers();
+        LinkedList<RecUser> users = extractRemainingUsers();
         users.addLast(createUser());
         adapter.clear();
         adapter.addAll(users);
@@ -363,7 +387,7 @@ public class MainFragment extends AbstractTabFragment {
     }
 
     private void removeFirst() {
-        LinkedList<UserDTO> users = extractRemainingUsers();
+        LinkedList<RecUser> users = extractRemainingUsers();
         if (users.isEmpty()) {
             return;
         }
@@ -375,7 +399,7 @@ public class MainFragment extends AbstractTabFragment {
     }
 
     private void removeLast() {
-        LinkedList<UserDTO> users = extractRemainingUsers();
+        LinkedList<RecUser> users = extractRemainingUsers();
         if (users.isEmpty()) {
             return;
         }
@@ -393,7 +417,7 @@ public class MainFragment extends AbstractTabFragment {
     }
 
     public void swipeLeft() {
-        List<UserDTO> users = extractRemainingUsers();
+        List<RecUser> users = extractRemainingUsers();
         if (users.isEmpty()) {
             return;
         }
@@ -424,7 +448,7 @@ public class MainFragment extends AbstractTabFragment {
     }
 
     public void swipeRight() {
-        List<UserDTO> users = extractRemainingUsers();
+        List<RecUser> users = extractRemainingUsers();
         if (users.isEmpty()) {
             return;
         }
@@ -458,7 +482,7 @@ public class MainFragment extends AbstractTabFragment {
         cardStackView.reverse();
     }
 
-    private void startUserProfileActivity(UserDTO user) {
+    private void startUserProfileActivity(RecUser user) {
         Intent intent = new Intent(getActivity(), ProfileActivity.class);
         intent.putExtra(ProfileActivity.USER_INFO, user);
         getActivity().startActivity(intent);

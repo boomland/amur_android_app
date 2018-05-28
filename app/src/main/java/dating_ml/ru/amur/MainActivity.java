@@ -6,11 +6,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
 
 import dating_ml.ru.amur.adapter.TabsFragmentAdapter;
-import dating_ml.ru.amur.dto.MainUserDTO;
+import dating_ml.ru.amur.dto.MainUser;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ViewPager viewPager;
 
-    public MainUserDTO mainUser;
+    public MainUser mainUser;
 
     public String base_url;
     public String auth_response;
@@ -30,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
-        mainUser = new MainUserDTO();
+        mainUser = new MainUser();
         receiveData();
 
 //        initToolbar();

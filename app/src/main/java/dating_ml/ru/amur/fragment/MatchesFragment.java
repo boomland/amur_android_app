@@ -13,11 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import dating_ml.ru.amur.ChatActivity;
@@ -26,8 +24,7 @@ import dating_ml.ru.amur.JsonRequester;
 import dating_ml.ru.amur.MainActivity;
 import dating_ml.ru.amur.MyTinderAPI;
 import dating_ml.ru.amur.R;
-import dating_ml.ru.amur.dto.MatchDTO;
-import dating_ml.ru.amur.dto.UserDTO;
+import dating_ml.ru.amur.dto.User;
 
 
 public class MatchesFragment extends AbstractTabFragment {
@@ -59,7 +56,7 @@ public class MatchesFragment extends AbstractTabFragment {
 
         RecyclerView rv = view.findViewById(R.id.recyclerView);
         rv.setLayoutManager(new LinearLayoutManager(context));
-        rv.setAdapter(new MatchListAdapter(tinderAPI.getMatches(((MainActivity)getActivity()).mainUser.getTinderToken())));
+        rv.setAdapter(new MatchListAdapter(JsonRequester.createMockMatches()));
 
         return view;
     }
@@ -73,7 +70,7 @@ public class MatchesFragment extends AbstractTabFragment {
         TextView userName;
         ImageView matchImage;
         TextView lastMessage;
-        public UserDTO mUser;
+        public User mUser;
 
         public MatchViewHolder(View itemView) {
             super(itemView);
@@ -106,9 +103,9 @@ public class MatchesFragment extends AbstractTabFragment {
     }
 
     public class MatchListAdapter extends RecyclerView.Adapter<MatchViewHolder> {
-        private List<UserDTO> data;
+        private List<User> data;
 
-        public MatchListAdapter(List<UserDTO> data) {
+        public MatchListAdapter(List<User> data) {
             this.data = data;
         }
 
@@ -121,12 +118,12 @@ public class MatchesFragment extends AbstractTabFragment {
 
         @Override
         public void onBindViewHolder(MatchViewHolder holder, int position) {
-            UserDTO item = data.get(position);
+            User item = data.get(position);
 
             holder.mUser = item;
             holder.userName.setText(item.getName());
-            if (item.getPhotoUrls() != null && !item.getPhotoUrls().isEmpty()) {
-                Glide.with(holder.itemView).load(item.getPhotoUrls().get(0)).into(holder.matchImage);
+            if (item.getPhotos() != null && !item.getPhotos().isEmpty()) {
+                Glide.with(holder.itemView).load(item.getPhotos().get(0)).into(holder.matchImage);
             }
             holder.lastMessage.setText(item.getName() + " говорит \"Зря-зря\"");
         }
