@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">Amur</string>
+
     <string name="facebook_app_id">464891386855067</string>
     <string name="fb_login_protocol_scheme">fb464891386855067</string>
+
+    <!--<string name="facebook_app_id">419607035142495</string>-->
+    <!--<string name="fb_login_protocol_scheme">fb419607035142495</string>-->
+
+
     <string name="tab_item_profile">Profile</string>
     <string name="tab_item_main">Main</string>
     <string name="tab_item_matches">Matches</string>

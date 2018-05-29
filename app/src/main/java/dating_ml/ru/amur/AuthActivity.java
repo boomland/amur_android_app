@@ -57,34 +57,42 @@ public class AuthActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
         loginButton = findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email", "user_updates", "user_birthday", "user_friends", "user_photos", "user_education_history", "user_relationship_details", "user_work_history", "user_likes");
+//        loginButton.setReadPermissions("email", "user_birthday", "user_friends", "user_photos", "user_education_history", "user_relationship_details", "user_work_history", "user_likes");
+        loginButton.setReadPermissions("email", "user_birthday", "user_likes", "user_photos");
 
         boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
         if (loggedIn) {
-            Log.d("loggedIn", "Is already logged in");
+            Log.d("mTextView", "Is already logged in");
             mainUser.setFacebookToken(AccessToken.getCurrentAccessToken().getToken());
             mainUser.setFacebookId(AccessToken.getCurrentAccessToken().getUserId());
             doTinderAuth();
         } else {
+            Log.d("mTextView", "Haven't already logged in");
             // Callback registration
             loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
                     Toast.makeText(getApplicationContext(), "Authentification sucessfull!", Toast.LENGTH_SHORT).show();
+                    Log.d("mTextView", "Authentification successful");
 
                     mainUser.setFacebookToken(loginResult.getAccessToken().getToken());
                     mainUser.setFacebookId(loginResult.getAccessToken().getUserId());
+
+                    Log.d("mTextView", "This is mainUser's fbToken and fbId: " + mainUser.getFacebookToken() + " " + mainUser.getFacebookId());
+
                     doTinderAuth();
                 }
 
                 @Override
                 public void onCancel() {
                     Toast.makeText(getApplicationContext(), "Authentification cancel!", Toast.LENGTH_SHORT).show();
+                    Log.d("mTextView", "Authentification cancel!");
                 }
 
                 @Override
                 public void onError(FacebookException exception) {
                     Toast.makeText(getApplicationContext(), "Authentification error!", Toast.LENGTH_SHORT).show();
+                    Log.d("mTextView", "Authentification error: " + exception.getMessage() + "\n" + exception.getStackTrace().toString());
                 }
             });
         }
