@@ -21,6 +21,7 @@ import dating_ml.ru.amur.dto.User;
 public class ChatActivity extends AppCompatActivity {
     private MainUser mMainUser;
     private User mBuddy;
+    private String mMatchId;
     private ChatView mChatView;
     private ArrayList<ChatMessage> mMessages;
     private MyTinderAPI tinderAPI;
@@ -38,6 +39,8 @@ public class ChatActivity extends AppCompatActivity {
         mChatView.setOnSentMessageListener(new ChatView.OnSentMessageListener(){
             @Override
             public boolean sendMessage(ChatMessage chatMessage){
+
+                tinderAPI.doSendMessageRequest(mMainUser.getToken(), chatMessage, mMatchId, createDoSendMessageRequestListener(), createDoSendMessageRequestErrorListener());
                 return true;
             }
         });
@@ -46,6 +49,25 @@ public class ChatActivity extends AppCompatActivity {
 
         tinderAPI.doUpdatesRequest(mMainUser.getToken(), createDoUpdatesRequestListener(), createDoUpdatesRequestErrorListener());
     }
+
+    private Response.ErrorListener createDoSendMessageRequestErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ChatActivity", "Error while doing SendMessageRequest: error = " + error.getMessage());
+            }
+        };
+    }
+
+    private Response.Listener<String> createDoSendMessageRequestListener() {
+        return new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("ChatActivity", "Successful SendMessageRequest: response = " + response);
+            }
+        };
+    }
+
 
     private Response.ErrorListener createDoUpdatesRequestErrorListener() {
         return new Response.ErrorListener() {
@@ -98,6 +120,12 @@ public class ChatActivity extends AppCompatActivity {
 
                 assert match != null;
                 Log.d("ChatActivity", "This is approprioate match: " + match.toString());
+
+                try {
+                    mMatchId = match.getString("_id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 JSONArray jMessages = null;
                 try {
