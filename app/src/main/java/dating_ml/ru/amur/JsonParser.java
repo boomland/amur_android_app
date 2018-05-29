@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import co.intentservice.chatui.models.ChatMessage;
 import dating_ml.ru.amur.dto.MainUser;
 import dating_ml.ru.amur.dto.RecUser;
 import dating_ml.ru.amur.dto.User;
@@ -102,5 +103,22 @@ public class JsonParser {
         recUser.setPhotos(photos);
 
         return recUser;
+    }
+
+    public static ChatMessage parseMessage(JSONObject message, final String from) throws JSONException {
+        Log.d("JsonParser", "This is json message: " + message.toString());
+
+        String text = message.getString("message");
+        long timestamp = message.getLong("timestamp");
+
+        ChatMessage.Type type = ChatMessage.Type.RECEIVED;
+        if (!message.getString("from").equals(from)) {
+            type = ChatMessage.Type.SENT;
+        }
+
+        ChatMessage res = new ChatMessage(text, timestamp, type);
+        Log.d("JsonParser", "This is parsed message: " + res.toString());
+
+        return res;
     }
 }
