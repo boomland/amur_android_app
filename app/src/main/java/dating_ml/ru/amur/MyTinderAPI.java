@@ -52,8 +52,9 @@ public class MyTinderAPI {
         queue.add(request);
     }
 
-    public JsonRequest createUpdatesRequest(final String authToken, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-        return createSimpleAPIRequest(Request.Method.POST, tinderURL + updatesEnd, "{\"last_activity_date\": \"\"}", authToken, listener, errorListener);
+    public void doUpdatesRequest(final String authToken, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        JsonRequest request = createSimpleAPIRequest(Request.Method.POST, tinderURL + updatesEnd, "{\"last_activity_date\": \"\"}", authToken, listener, errorListener);
+        queue.add(request);
     }
 
     /*

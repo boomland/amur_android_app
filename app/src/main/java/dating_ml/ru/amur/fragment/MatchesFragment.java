@@ -14,12 +14,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import dating_ml.ru.amur.ChatActivity;
 import dating_ml.ru.amur.Constants;
+import dating_ml.ru.amur.JsonParser;
 import dating_ml.ru.amur.JsonRequester;
 import dating_ml.ru.amur.MainActivity;
 import dating_ml.ru.amur.MyTinderAPI;
@@ -30,6 +40,7 @@ import dating_ml.ru.amur.dto.User;
 public class MatchesFragment extends AbstractTabFragment {
     private static final int LAYOUT = R.layout.fragment_matches;
     private MyTinderAPI tinderAPI;
+    private ArrayList<User> matches;
 
     public static MatchesFragment getInstance(Context context) {
         Bundle args = new Bundle();
@@ -47,6 +58,7 @@ public class MatchesFragment extends AbstractTabFragment {
         super.onCreate(savedInstanceState);
 
         tinderAPI = new MyTinderAPI(getActivity());
+        matches = new ArrayList<>();
     }
 
     @Nullable
@@ -56,9 +68,64 @@ public class MatchesFragment extends AbstractTabFragment {
 
         RecyclerView rv = view.findViewById(R.id.recyclerView);
         rv.setLayoutManager(new LinearLayoutManager(context));
-        rv.setAdapter(new MatchListAdapter(JsonRequester.createMockMatches()));
+
+        rv.setAdapter(new MatchListAdapter(matches));
+        tinderAPI.doUpdatesRequest(((MainActivity) Objects.requireNonNull(getActivity())).mainUser.getToken(), createDoUpdatesRequestListener(rv.getAdapter()), createDoUpdatesRequestErrorListener());
 
         return view;
+    }
+
+    private Response.ErrorListener createDoUpdatesRequestErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("MatchesFragment", "Error while doing DoUpdatesRequest: error = " + error.getMessage());
+            }
+        };
+    }
+
+    private Response.Listener<String> createDoUpdatesRequestListener(final RecyclerView.Adapter adapter) {
+        return new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("MatchesFragment", "This is response of DoUpdatesRequest: " + response);
+
+                JSONObject obj = null;
+                try {
+                    obj = new JSONObject(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                JSONArray jMatches = null;
+                try {
+                    assert obj != null;
+                    jMatches = obj.getJSONArray("matches");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                matches.clear();
+
+                JSONObject person = null;
+                assert jMatches != null;
+                for (int i = 0; i < jMatches.length(); ++i) {
+                    try {
+                        person = jMatches.getJSONObject(i).getJSONObject("person");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        assert person != null;
+                        matches.add(JsonParser.parseUserFromPerson(person));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+        };
     }
 
     public void setContext(Context context) {
@@ -130,6 +197,7 @@ public class MatchesFragment extends AbstractTabFragment {
 
         @Override
         public int getItemCount() {
+            Log.d("MatchesFragment", "getItemCount() = " + data.size());
             return data.size();
         }
 

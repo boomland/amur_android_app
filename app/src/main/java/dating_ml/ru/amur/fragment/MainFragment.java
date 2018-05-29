@@ -151,6 +151,8 @@ public class MainFragment extends AbstractTabFragment {
     }
 
     public void makeEncounters() {
+        Log.d("MainFragment", "This is makeEncounters");
+
         try {
             JSONArray votes = new JSONArray();
 

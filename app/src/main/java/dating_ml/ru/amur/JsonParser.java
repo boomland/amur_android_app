@@ -1,5 +1,7 @@
 package dating_ml.ru.amur;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +52,8 @@ public class JsonParser {
     }
 
     public static MainUser parseMainUserFromProfile(JSONObject profile) throws JSONException {
+        Log.d("JsonParser", "This is profile: " + profile.toString());
+
         MainUser mainUser = new MainUser();
 
         mainUser.setId(profile.getString("_id"));
@@ -70,6 +74,8 @@ public class JsonParser {
             photos.add(jPhotos.getJSONObject(i).getString("url"));
         }
         mainUser.setPhotos(photos);
+
+        Log.d("JsonParser", "This is parsed mainUser: " + mainUser.toString());
 
         return mainUser;
     }

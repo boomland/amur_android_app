@@ -69,6 +69,7 @@ public class AuthActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
                     Toast.makeText(getApplicationContext(), "Authentification sucessfull!", Toast.LENGTH_SHORT).show();
+
                     mainUser.setFacebookToken(loginResult.getAccessToken().getToken());
                     mainUser.setFacebookId(loginResult.getAccessToken().getUserId());
                     doTinderAuth();
@@ -107,24 +108,17 @@ public class AuthActivity extends AppCompatActivity {
                 try {
                     JSONObject obj = new JSONObject(response);
 
-                    //TODO: в этом месте запросить у TinderAPI /profile и распрасить mainUser
-
                     String authToken = obj.getString("token");
 
                     MyTinderAPI tinderAPI = new MyTinderAPI(getApplicationContext());
-                    tinderAPI.doProfileRequest(authToken, createDoProfileRequestListener(), createDoProfileRequestErrorListener());
+                    tinderAPI.doProfileRequest(authToken, createDoProfileRequestListener(authToken), createDoProfileRequestErrorListener());
 
 //                    mainUser.setToken(obj.getString("token"));
 //                    mainUser.setId(obj.getJSONObject("user").getString("_id"));
 
-                    Log.d("mTextView", "This is mainUser.toString(): " + mainUser.toString());
-
                 } catch (JSONException e) {
                     Log.d("mTextView", "Some exception caused by parsing responce from Tinder: " + e.getMessage());
                 }
-
-                Log.d("mTextView", "tinder_id: " + mainUser.getId() + ".\n Tinder token: " + mainUser.getFacebookToken());
-                requester.resolveAmurUrl(createResolveAmurUrlResponseListener(), createResolveAmurUrlErrorListener());
             }
         };
     }
@@ -138,13 +132,18 @@ public class AuthActivity extends AppCompatActivity {
         };
     }
 
-    private Response.Listener<String> createDoProfileRequestListener() {
+    private Response.Listener<String> createDoProfileRequestListener(final String authToken) {
         return new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     Log.d("AuthActivity", "Successful ProfileRequest: response = " + response);
                     mainUser = JsonParser.parseMainUserFromProfile(new JSONObject(response));
+                    mainUser.setToken(authToken);
+
+                    Log.d("mTextView", "This is mainUser.toString(): " + mainUser.toString());
+                    Log.d("mTextView", "tinder_id: " + mainUser.getId() + ".\n Tinder token: " + mainUser.getToken());
+//                    requester.resolveAmurUrl(createResolveAmurUrlResponseListener(), createResolveAmurUrlErrorListener());
                     startMainActivity();
                 } catch (JSONException e) {
                     Log.d("AuthActivity", "Error while converting responce to JSONObject to pass it into parseMainUserFromProfile");
