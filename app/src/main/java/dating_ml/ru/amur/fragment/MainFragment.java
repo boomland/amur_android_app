@@ -198,6 +198,8 @@ public class MainFragment extends AbstractTabFragment {
         return new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.d("MainFragment", "This is response from getEncounters: " + response);
+
                 try {
                     JSONObject json = new JSONObject(response);
                     String status = json.getString("status");
@@ -295,6 +297,8 @@ public class MainFragment extends AbstractTabFragment {
             public void onCardSwiped(SwipeDirection direction) {
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
+                Log.d("CardStackView", "This is adapter.getCount(): " + adapter.getCount());
+
 
                 if (direction.toString().compareTo("Right") == 0) {
                     // liked
@@ -317,7 +321,8 @@ public class MainFragment extends AbstractTabFragment {
                 }
 
                 Log.d("Check getCount()", "topIndex = " + String.valueOf(cardStackView.getTopIndex()) + ", getCount = " + adapter.getCount());
-                if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
+//                if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
+                if (adapter.getCount() < 5) {
                     Log.d("CardStackView", "NEW PORTION ACQUIRED!");
                     portion_acquired = true;
                     makeEncounters();

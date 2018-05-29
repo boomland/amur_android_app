@@ -194,7 +194,7 @@ public class AuthActivity extends AppCompatActivity {
                 } else if (error instanceof AuthFailureError) {
                     Log.d("mTextView", "Auth failure");
                 } else if (error instanceof ServerError) {
-                    Log.d("mTextView", "server error");
+                    Log.d("mTextView", "server error" + error.getMessage() + " " + error.getCause());
                 } else if (error instanceof NetworkError) {
                     Log.d("mTextView", "network error");
                 } else if (error instanceof ParseError) {
@@ -214,6 +214,9 @@ public class AuthActivity extends AppCompatActivity {
                     .put("tinder_id", mainUser.getId())
                     .put("tinder_auth_token", mainUser.getToken())
                     .toString();
+
+            Log.d("mTextView", "This is amur_login_str: " + amur_login_str);
+
             JsonRequest amur_request = requester.createCustomJsonRequest(
                     AmurAPI.base_url + "/api",
                     amur_login_str,
@@ -232,15 +235,10 @@ public class AuthActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 auth_response = response;
-                try {
-                    completeMainUserDTO(auth_response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
                 Log.d("mTextView", response);
                 Log.d("mTextView", "This is main user after AmurAuth: " + mainUser.toString());
 
-//                startMainActivity();
+                startMainActivity();
                 Log.d("MAINACTIVITY", "It starts..............................");
             }
         };
