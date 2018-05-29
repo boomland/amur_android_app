@@ -1,13 +1,10 @@
-package dating_ml.ru.amur;
+package dating_ml.ru.amur.API;
 
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import android.content.Context;
 
 import java.util.concurrent.ExecutionException;
 

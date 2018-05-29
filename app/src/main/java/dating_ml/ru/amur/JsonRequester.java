@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import co.intentservice.chatui.models.ChatMessage;
+import dating_ml.ru.amur.API.AmurAPI;
 import dating_ml.ru.amur.dto.MainUser;
 import dating_ml.ru.amur.dto.User;
 

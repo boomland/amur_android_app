@@ -7,6 +7,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import dating_ml.ru.amur.API.MyTinderAPI;
 import dating_ml.ru.amur.dto.MainUser;
 import dating_ml.ru.amur.dto.RecUser;
 import dating_ml.ru.amur.dto.User;

@@ -24,15 +24,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import dating_ml.ru.amur.ChatActivity;
 import dating_ml.ru.amur.Constants;
 import dating_ml.ru.amur.JsonParser;
-import dating_ml.ru.amur.JsonRequester;
 import dating_ml.ru.amur.MainActivity;
-import dating_ml.ru.amur.MyTinderAPI;
+import dating_ml.ru.amur.API.MyTinderAPI;
 import dating_ml.ru.amur.R;
 import dating_ml.ru.amur.dto.User;
 

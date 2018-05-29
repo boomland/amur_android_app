@@ -57,9 +57,9 @@ public class ProfileFragment extends AbstractTabFragment {
 
         name.setText(mainUser.getName());
         if (mainUser.getGender() == 0) {
-            gender.setText("Женский");
+            gender.setText("Женский пол");
         } else {
-            gender.setText("Мужской");
+            gender.setText("Мужской пол");
         }
 
         birthDay.setText(mainUser.getBirthDate());

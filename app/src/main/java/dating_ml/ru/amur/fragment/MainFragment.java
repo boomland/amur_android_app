@@ -38,13 +38,12 @@ import java.util.List;
 
 import dating_ml.ru.amur.JsonRequester;
 import dating_ml.ru.amur.MainActivity;
+import dating_ml.ru.amur.API.MyTinderAPI;
 import dating_ml.ru.amur.ProfileActivity;
 import dating_ml.ru.amur.R;
-import dating_ml.ru.amur.TinderAPI;
 import dating_ml.ru.amur.adapter.UserCardAdapter;
 import dating_ml.ru.amur.dto.MainUser;
 import dating_ml.ru.amur.dto.RecUser;
-import dating_ml.ru.amur.dto.User;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -301,7 +300,7 @@ public class MainFragment extends AbstractTabFragment {
                     // liked
                     String id = spots.get(cardStackView.getTopIndex() - 1).getId();
                     liked_ids.add(id);
-                    JsonRequest like_request = TinderAPI.createSimpleGetApiCall(
+                    JsonRequest like_request = MyTinderAPI.createSimpleGetApiCall(
                             "https://api.gotinder.com/like/" + id,
                             mainUser.getToken());
                     queue.add(like_request);
@@ -311,7 +310,7 @@ public class MainFragment extends AbstractTabFragment {
                     String id = spots.get(cardStackView.getTopIndex() - 1).getId();
                     disliked_ids.add(id);
 
-                    JsonRequest dislike_request = TinderAPI.createSimpleGetApiCall(
+                    JsonRequest dislike_request = MyTinderAPI.createSimpleGetApiCall(
                             "https://api.gotinder.com/pass/" + id,
                             mainUser.getToken());
                     queue.add(dislike_request);

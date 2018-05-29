@@ -30,6 +30,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import dating_ml.ru.amur.API.AmurAPI;
+import dating_ml.ru.amur.API.MyTinderAPI;
 import dating_ml.ru.amur.dto.MainUser;
 
 public class AuthActivity extends AppCompatActivity {
@@ -143,8 +145,8 @@ public class AuthActivity extends AppCompatActivity {
 
                     Log.d("mTextView", "This is mainUser.toString(): " + mainUser.toString());
                     Log.d("mTextView", "tinder_id: " + mainUser.getId() + ".\n Tinder token: " + mainUser.getToken());
-//                    requester.resolveAmurUrl(createResolveAmurUrlResponseListener(), createResolveAmurUrlErrorListener());
-                    startMainActivity();
+                    requester.resolveAmurUrl(createResolveAmurUrlResponseListener(), createResolveAmurUrlErrorListener());
+//                    startMainActivity();
                 } catch (JSONException e) {
                     Log.d("AuthActivity", "Error while converting responce to JSONObject to pass it into parseMainUserFromProfile");
                     e.printStackTrace();
@@ -196,6 +198,7 @@ public class AuthActivity extends AppCompatActivity {
 
     public void performAmurAuth() {
         Log.d("mTextView", "Oh yeah:) Amurrrr auth...)");
+        Log.d("mTextView", "This is AmurBaseUrl: " + AmurAPI.base_url + "/api");
 
         try {
             String amur_login_str = new JSONObject()
