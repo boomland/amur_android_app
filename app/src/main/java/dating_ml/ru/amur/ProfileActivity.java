@@ -26,18 +26,12 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_actvity);
+        Log.d("ProfileActivity", "This is onCreate");
 
-        mRecUser = getIntent().getParcelableExtra(USER_INFO);
-        Log.d("UserProfileActivity2", mRecUser.toString());
+        receiveData();
 
         mNameAndAge = findViewById(R.id.name_and_age);
         mNameAndAge.setText(mRecUser.getName() + ", " + mRecUser.getBirthDate());
-
-        mWorkplace = findViewById(R.id.workplace);
-        mWorkplace.setText("Google");
-
-        mPlaceOfStudy = findViewById(R.id.place_of_study);
-        mPlaceOfStudy.setText("МГУ");
 
         mDistanceToYou= findViewById(R.id.distance_to_you);
         mDistanceToYou.setText(mDistText + String.valueOf(mRecUser.getDistance()));
@@ -48,6 +42,11 @@ public class ProfileActivity extends AppCompatActivity {
         mProfilePhotosPager = findViewById(R.id.profile_photos_pager);
         ImageAdapter imageAdapter = new ImageAdapter(this, mRecUser.getPhotos());
         mProfilePhotosPager.setAdapter(imageAdapter);
+    }
+
+    private void receiveData() {
+        mRecUser = getIntent().getParcelableExtra(USER_INFO);
+        Log.d("UserProfileActivity", "This is mRecUser: " + mRecUser.toString());
     }
 
 }

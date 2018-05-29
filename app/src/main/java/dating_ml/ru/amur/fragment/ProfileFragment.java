@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 import dating_ml.ru.amur.MainActivity;
@@ -54,8 +56,14 @@ public class ProfileFragment extends AbstractTabFragment {
         }
 
         name.setText(mainUser.getName());
-        gender.setText(String.valueOf(mainUser.getGender()));
+        if (mainUser.getGender() == 0) {
+            gender.setText("Женский");
+        } else {
+            gender.setText("Мужской");
+        }
+
         birthDay.setText(mainUser.getBirthDate());
+
         bio.setText(mainUser.getBio());
         ageFilter.setText("от " + String.valueOf(mainUser.getAgeFilterMin()) + " до " + String.valueOf(mainUser.getAgeFilterMax()) + " лет");
         maxDist.setText(String.valueOf(mainUser.getDistanceFilter()));

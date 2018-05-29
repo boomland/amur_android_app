@@ -27,44 +27,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginRight="8dp"
-                app:srcCompat="@drawable/baseline_business_center_black_24dp" />
-
-            <TextView
-                android:id="@+id/workplace"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Designer в rjvgfybb Design studio of SPBSUACE"
-                android:textAlignment="viewStart"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginRight="8dp"
-                app:srcCompat="@drawable/baseline_school_black_24dp" />
-
-            <TextView
-                android:id="@+id/place_of_study"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="SPB universty of architecture" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:orientation="horizontal">
 
