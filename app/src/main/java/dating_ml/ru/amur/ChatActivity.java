@@ -78,7 +78,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 JSONObject match = null;
-                JSONObject person = null;
+                JSONObject person;
                 assert matches != null;
                 for (int i = 0; i < matches.length(); ++i) {
                     try {
@@ -109,21 +109,10 @@ public class ChatActivity extends AppCompatActivity {
                 assert jMessages != null;
                 Log.d("ChatActivity", "This is jMessages: " + jMessages.toString());
 
-                mMessages = new ArrayList<>();
-                JSONObject message = null;
-                for (int i = 0; i < jMessages.length(); ++i) {
-                    try {
-                        message = jMessages.getJSONObject(i);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        assert message != null;
-                        mMessages.add(JsonParser.parseMessage(message, mBuddy.getId()));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    mMessages = JsonParser.parseMessages(jMessages, mBuddy.getId());
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
                 Log.d("ChatActivity", "This is parsed mMessages: " + mMessages.toString());

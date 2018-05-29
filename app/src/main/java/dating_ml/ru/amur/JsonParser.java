@@ -121,4 +121,17 @@ public class JsonParser {
 
         return res;
     }
+
+    public static ArrayList<ChatMessage> parseMessages(JSONArray messages, final String from) throws JSONException {
+        Log.d("JsonParser", "This is json messages: " + messages.toString());
+
+        ArrayList<ChatMessage> res = new ArrayList<>();
+        JSONObject jMessage = null;
+        for (int i = 0; i < messages.length(); ++i) {
+            jMessage = messages.getJSONObject(i);
+            res.add(JsonParser.parseMessage(jMessage, from));
+        }
+
+        return res;
+    }
 }
