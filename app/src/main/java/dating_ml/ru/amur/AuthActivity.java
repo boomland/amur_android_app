@@ -227,7 +227,7 @@ public class AuthActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Log.d("mTextView", response);
-                Log.d("mTextView", mainUser.toString());
+                Log.d("mTextView", "This is main user after AmurAuth: " + mainUser.toString());
 
 //                startMainActivity();
                 Log.d("MAINACTIVITY", "It starts..............................");

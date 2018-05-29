@@ -47,6 +47,11 @@ public class MyTinderAPI {
 
     // ------------------------------ Supportive ---------------------------------------------------
 
+    public void doRecRequest(final String authToken, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        JsonRequest request = createSimpleAPIRequest(Request.Method.GET, tinderURL + recEnd, "", authToken, listener, errorListener);
+        queue.add(request);
+    }
+
     public void doSendMessageRequest(final String authToken, ChatMessage message, String to, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         String body = "{\"message\": \"" + message.getMessage() + "\"}";
 
