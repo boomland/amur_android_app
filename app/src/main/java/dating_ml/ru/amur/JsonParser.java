@@ -56,18 +56,61 @@ public class JsonParser {
         Log.d("JsonParser", "This is profile: " + profile.toString());
 
         MainUser mainUser = new MainUser();
-
-        mainUser.setId(profile.getString("_id"));
-        mainUser.setAgeFilterMax(profile.getInt("age_filter_max"));
-        mainUser.setAgeFilterMin(profile.getInt("age_filter_min"));
-        mainUser.setBio(profile.getString("bio"));
-        mainUser.setBirthDate(profile.getString("birth_date"));
-        mainUser.setDistanceFilter(profile.getInt("distance_filter"));
-        mainUser.setEmail(profile.getString("email"));
-        mainUser.setFacebookId(profile.getString("facebook_id"));
-        mainUser.setGender(profile.getInt("gender"));
-        mainUser.setGenderFilter(profile.getInt("gender_filter"));
-        mainUser.setName(profile.getString("name"));
+        try {
+            mainUser.setId(profile.getString("_id"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setAgeFilterMax(profile.getInt("age_filter_max"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setAgeFilterMin(profile.getInt("age_filter_min"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setBio(profile.getString("bio"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setBirthDate(profile.getString("birth_date"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setDistanceFilter(profile.getInt("distance_filter"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setEmail(profile.getString("email"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setFacebookId(profile.getString("facebook_id"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setGender(profile.getInt("gender"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setGenderFilter(profile.getInt("gender_filter"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
+        try {
+            mainUser.setName(profile.getString("name"));
+        } catch (Exception e) {
+            Log.d("JsonParser","Error while parsing: " + e.getMessage() + " " + e.getCause());
+        }
 
         ArrayList<String> photos = new ArrayList<>();
         JSONArray jPhotos = profile.getJSONArray("photos");
