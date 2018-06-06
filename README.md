@@ -9,12 +9,22 @@
 </p>
 2. После аутентификации пользователь попадает на главный экран в котором присутсвует 3 раздела:
 	* PROFILE: профиль пользователя.
-	![alt text](https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.20.03%20PM.png)
+	<p align="center">
+		<img src="https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.20.03%20PM.png"/>
+	</p>
 	* MAIN: карточки других пользователей.
-	![alt text](https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.37.26%20PM.png)
+	<p align="center">
+		<img src="https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.37.26%20PM.png"/>
+	</p>
 	* MATCHES: образовавшиеся пары
-	![alt text](https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.22.41%20PM.png)
+	<p align="center">
+		<img src="https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.22.41%20PM.png"/>
+	</p>
 3. Путем смахивания карточек влево и вправо пользователь отбирает понравившихся людей. По нажатии на карточку можно посмотреть более подробную информации о пользователе.
-	![alt text](https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.37.42%20PM.png)
+<p align="center">
+	<img src="https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.37.42%20PM.png"/>
+</p>
 4. Если образовалась пара, то она появляется в разделе Matches. Далее пользователь может начать переписку с понравившемся человеком.
-	![alt text](https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.22.58%20PM.png)
+<p align="center">
+	<img src="https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.22.58%20PM.png"/>
+</p>
