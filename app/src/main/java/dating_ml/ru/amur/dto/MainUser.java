@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public class MainUser extends User implements Parcelable{
+public class MainUser extends User implements Parcelable {
     private int ageFilterMax;
     private int ageFilterMin;
     private int distanceFilter;
@@ -27,7 +27,22 @@ public class MainUser extends User implements Parcelable{
         facebookToken = "";
     }
 
-    public MainUser(String id, String birthDate, int gender, String name, String bio, ArrayList<String> photos, int ageFilterMax, int ageFilterMin, int distanceFilter, String email, String facebookId, int genderFilter, String token, String facebookToken) {
+    public MainUser(
+            String id,
+            String birthDate,
+            int gender,
+            String name,
+            String bio,
+            ArrayList<String> photos,
+            int ageFilterMax,
+            int ageFilterMin,
+            int distanceFilter,
+            String email,
+            String facebookId,
+            int genderFilter,
+            String token,
+            String facebookToken
+    ) {
         super(id, birthDate, gender, name, bio, photos);
         this.ageFilterMax = ageFilterMax;
         this.ageFilterMin = ageFilterMin;

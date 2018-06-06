@@ -49,15 +49,11 @@ public class AuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth);
 
         requester = new JsonRequester(this);
-
-//        startMockMainActivity();
-
         mainUser = new MainUser();
 
         callbackManager = CallbackManager.Factory.create();
 
         loginButton = findViewById(R.id.login_button);
-//        loginButton.setReadPermissions("email", "user_birthday", "user_friends", "user_photos", "user_education_history", "user_relationship_details", "user_work_history", "user_likes");
         loginButton.setReadPermissions("email", "user_birthday", "user_likes", "user_photos");
 
         boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
@@ -122,10 +118,6 @@ public class AuthActivity extends AppCompatActivity {
 
                     MyTinderAPI tinderAPI = new MyTinderAPI(getApplicationContext());
                     tinderAPI.doProfileRequest(authToken, createDoProfileRequestListener(authToken), createDoProfileRequestErrorListener());
-
-//                    mainUser.setToken(obj.getString("token"));
-//                    mainUser.setId(obj.getJSONObject("user").getString("_id"));
-
                 } catch (JSONException e) {
                     Log.d("mTextView", "Some exception caused by parsing responce from Tinder: " + e.getMessage());
                 }
@@ -154,7 +146,6 @@ public class AuthActivity extends AppCompatActivity {
                     Log.d("mTextView", "This is mainUser.toString(): " + mainUser.toString());
                     Log.d("mTextView", "tinder_id: " + mainUser.getId() + ".\n Tinder token: " + mainUser.getToken());
                     requester.resolveAmurUrl(createResolveAmurUrlResponseListener(), createResolveAmurUrlErrorListener());
-//                    startMainActivity();
                 } catch (JSONException e) {
                     Log.d("AuthActivity", "Error while converting responce to JSONObject to pass it into parseMainUserFromProfile");
                     e.printStackTrace();
@@ -251,16 +242,6 @@ public class AuthActivity extends AppCompatActivity {
         b.putParcelable(Constants.MAIN_USER, mainUser);
         b.putString("base_url", AmurAPI.base_url);
         b.putString("auth_response", auth_response);
-        intent.putExtras(b);
-
-        startActivity(intent);
-    }
-
-    void startPlayGroundActivity() {
-        Intent intent = new Intent(getApplicationContext(), PlayGroundActivity.class);
-
-        Bundle b = new Bundle();
-        b.putParcelable(Constants.MAIN_USER, mainUser);
         intent.putExtras(b);
 
         startActivity(intent);

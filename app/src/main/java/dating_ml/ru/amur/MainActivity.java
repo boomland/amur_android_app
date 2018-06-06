@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     public MainUser mainUser;
 
     public String base_url;
-//    public String auth_response;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
         mainUser = new MainUser();
         receiveData();
-
-//        initToolbar();
 
         drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -59,23 +56,8 @@ public class MainActivity extends AppCompatActivity {
         if (b != null) {
             mainUser = b.getParcelable(Constants.MAIN_USER);
             base_url = b.getString("base_url");
-//            auth_response = b.getString("auth_response");
         }
 
         Log.d("MainActivity", "This is received mainUser: " + mainUser.toString());
     }
-
-    /*
-    private void initToolbar() {
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.app_name);
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                return false;
-            }
-        });
-    }
-    */
 }

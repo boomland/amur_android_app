@@ -46,8 +46,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-//        mMessages = JsonRequester.requestMessages(mMainUser, mBuddy);
-
         tinderAPI.doUpdatesRequest(mMainUser.getToken(), createDoUpdatesRequestListener(), createDoUpdatesRequestErrorListener());
     }
 
