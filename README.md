@@ -3,8 +3,10 @@
 Это сторонний клиент для tinder, главной функция которого является более качественная подборка людей для знакомств.
 ## Взаимодействие с пользователем
 1. Пользователь проходит аутентификацию с помощью facebook аккаунта.
-	![alt text](https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.12.43%20PM.png)
-	![alt text](https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.13.08%20PM.png)
+<p align="center">
+	<img src="https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.12.43%20PM.png" />
+	<img src="https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.13.08%20PM.png" />
+</p>
 2. После аутентификации пользователь попадает на главный экран в котором присутсвует 3 раздела:
 	* PROFILE: профиль пользователя.
 	![alt text](https://github.com/shaurmabecon/images/blob/master/Screen%20Shot%202018-06-06%20at%201.20.03%20PM.png)
